@@ -1,6 +1,6 @@
 'use client';
 
-import { JobApplication, JobStatus } from '@/lib/types';
+import { JobApplication, JobStatus, Priority, ClosedResult } from '@/lib/types';
 import { JobCard } from './job-card';
 import { STATUS_CONFIG } from '@/lib/constants';
 import { useDroppable } from '@dnd-kit/core';
@@ -11,9 +11,12 @@ interface KanbanColumnProps {
   status: JobStatus;
   jobs: JobApplication[];
   onJobClick: (job: JobApplication) => void;
+  onPriorityChange: (jobId: string, priority: Priority) => void;
+  onStatusChange: (jobId: string, status: JobStatus) => void;
+  onResultChange: (jobId: string, result: ClosedResult | null) => void;
 }
 
-export function KanbanColumn({ status, jobs, onJobClick }: KanbanColumnProps) {
+export function KanbanColumn({ status, jobs, onJobClick, onPriorityChange, onStatusChange, onResultChange }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   });
@@ -62,6 +65,9 @@ export function KanbanColumn({ status, jobs, onJobClick }: KanbanColumnProps) {
                   key={job.id}
                   job={job}
                   onClick={() => onJobClick(job)}
+                  onPriorityChange={onPriorityChange}
+                  onStatusChange={onStatusChange}
+                  onResultChange={onResultChange}
                 />
               ))
             )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Interview, InterviewType, InterviewResult } from '@/lib/types';
+import { Interview, InterviewType, InterviewContentType, InterviewResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
+import { INTERVIEW_CONTENT_TYPE_CONFIG } from '@/lib/constants';
 import { nanoid } from 'nanoid';
 import { PlusIcon, Trash2Icon, CalendarIcon } from 'lucide-react';
 
@@ -38,6 +39,7 @@ export function InterviewManager({ interviews, onChange }: InterviewManagerProps
       id: nanoid(),
       date: formData.date,
       type: formData.type as InterviewType,
+      content_type: formData.content_type as InterviewContentType,
       round: formData.round || interviews.length + 1,
       interviewer: formData.interviewer,
       notes: formData.notes,
@@ -126,9 +128,15 @@ export function InterviewManager({ interviews, onChange }: InterviewManagerProps
                      '⏳ 待定'}
                   </Badge>
                   <Badge variant="outline">
-                    {interview.type === 'onsite' ? '现场' :
-                     interview.type === 'video' ? '视频' : '电话'}
+                    {interview.type === 'onsite' ? '🏢 现场' :
+                     interview.type === 'video' ? '📹 视频' : '📞 电话'}
                   </Badge>
+                  {interview.content_type && (
+                    <Badge variant="outline" className="bg-blue-50">
+                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type].icon}{' '}
+                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type].label}
+                    </Badge>
+                  )}
                 </div>
                 <div className="text-sm text-gray-600 space-y-1">
                   <div className="flex items-center gap-2">
@@ -200,7 +208,7 @@ export function InterviewManager({ interviews, onChange }: InterviewManagerProps
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>面试形式</Label>
                 <Select
@@ -214,6 +222,25 @@ export function InterviewManager({ interviews, onChange }: InterviewManagerProps
                     <SelectItem value="video">📹 视频面试</SelectItem>
                     <SelectItem value="onsite">🏢 现场面试</SelectItem>
                     <SelectItem value="phone">📞 电话面试</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>面试类型</Label>
+                <Select
+                  value={formData.content_type || 'technical'}
+                  onValueChange={(value) => setFormData({ ...formData, content_type: value as InterviewContentType })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="technical">💻 技术面</SelectItem>
+                    <SelectItem value="hr">💼 HR面</SelectItem>
+                    <SelectItem value="manager">👔 主管面</SelectItem>
+                    <SelectItem value="ceo">🎯 高管面</SelectItem>
+                    <SelectItem value="other">📋 其他</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

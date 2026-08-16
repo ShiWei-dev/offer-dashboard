@@ -9,11 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/utils';
 import { CalendarIcon, BuildingIcon, BriefcaseIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Interview, InterviewResult } from '@/lib/types';
+import { Interview, InterviewResult, QAPair } from '@/lib/types';
+import { StructuredQAEditor } from '@/components/interviews/structured-qa-editor';
 
 export default function InterviewsPage() {
   const { jobs, updateJob } = useJobStore();
@@ -27,6 +29,7 @@ export default function InterviewsPage() {
   const [formData, setFormData] = useState({
     notes: '',
     result: 'pending' as InterviewResult,
+    qa_pairs: [] as QAPair[],
   });
 
   // 获取所有有面试记录的投递
@@ -52,8 +55,9 @@ export default function InterviewsPage() {
     return new Date(bLatest).getTime() - new Date(aLatest).getTime();
   });
 
-  // 展开所有面试用于统计
+  // 展开所有面试和笔试用于统计
   const allInterviews = jobsWithInterviews.flatMap(job => job.interviews);
+  const allWrittenTests = jobs.flatMap(job => job.written_tests || []);
 
   // 筛选
   const now = new Date();
@@ -68,13 +72,21 @@ export default function InterviewsPage() {
     return true;
   });
 
-  // 统计数据
+  // 统计数据 - 区分面试和笔试
   const stats = {
-    total: allInterviews.length,
-    upcoming: allInterviews.filter(i => new Date(i.date) > now).length,
-    passed: allInterviews.filter(i => i.result === 'pass').length,
-    failed: allInterviews.filter(i => i.result === 'fail').length,
-    pending: allInterviews.filter(i => i.result === 'pending').length,
+    // 面试统计
+    totalInterviews: allInterviews.length,
+    upcomingInterviews: allInterviews.filter(i => new Date(i.date) > now).length,
+    passedInterviews: allInterviews.filter(i => i.result === 'pass').length,
+    failedInterviews: allInterviews.filter(i => i.result === 'fail').length,
+    pendingInterviews: allInterviews.filter(i => i.result === 'pending').length,
+
+    // 笔试统计
+    totalWrittenTests: allWrittenTests.length,
+    upcomingWrittenTests: allWrittenTests.filter(t => new Date(t.date) > now).length,
+    passedWrittenTests: allWrittenTests.filter(t => t.result === 'pass').length,
+    failedWrittenTests: allWrittenTests.filter(t => t.result === 'fail').length,
+    pendingWrittenTests: allWrittenTests.filter(t => t.result === 'pending').length,
   };
 
   // 打开编辑对话框
@@ -83,6 +95,7 @@ export default function InterviewsPage() {
     setFormData({
       notes: interview.notes || '',
       result: interview.result || 'pending',
+      qa_pairs: interview.qa_pairs || [],
     });
   };
 
@@ -95,7 +108,7 @@ export default function InterviewsPage() {
 
     const updatedInterviews = job.interviews.map(i =>
       i.id === editingInterview.interview.id
-        ? { ...i, notes: formData.notes, result: formData.result }
+        ? { ...i, notes: formData.notes, result: formData.result, qa_pairs: formData.qa_pairs }
         : i
     );
 
@@ -122,48 +135,102 @@ export default function InterviewsPage() {
 
       <main className="container mx-auto px-6 py-8 space-y-8">
         {/* 统计卡片 */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
-                <div className="text-sm text-gray-600 mt-1">总面试数</div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {/* 面试统计 */}
+          <Card className="col-span-2 md:col-span-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-700">🎯 面试统计</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalInterviews}</div>
+                  <div className="text-xs text-gray-600 mt-1">总数</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">{stats.upcomingInterviews}</div>
+                  <div className="text-xs text-gray-600 mt-1">待参加</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{stats.passedInterviews}</div>
+                  <div className="text-xs text-gray-600 mt-1">已通过</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-center mt-3 pt-3 border-t">
+                <div>
+                  <div className="text-xl font-bold text-red-600">{stats.failedInterviews}</div>
+                  <div className="text-xs text-gray-600 mt-1">未通过</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-600">{stats.pendingInterviews}</div>
+                  <div className="text-xs text-gray-600 mt-1">待定</div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">{stats.upcoming}</div>
-                <div className="text-sm text-gray-600 mt-1">待参加</div>
+          {/* 笔试统计 */}
+          <Card className="col-span-2 md:col-span-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-700">📝 笔试统计</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">总数</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">{stats.upcomingWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">待参加</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{stats.passedWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">已通过</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-center mt-3 pt-3 border-t">
+                <div>
+                  <div className="text-xl font-bold text-red-600">{stats.failedWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">未通过</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-600">{stats.pendingWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">待定</div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">{stats.passed}</div>
-                <div className="text-sm text-gray-600 mt-1">已通过</div>
+          {/* 合计统计 */}
+          <Card className="col-span-2 md:col-span-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-gray-700">📊 合计</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalInterviews + stats.totalWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">总数</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">{stats.upcomingInterviews + stats.upcomingWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">待参加</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{stats.passedInterviews + stats.passedWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">已通过</div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{stats.failed}</div>
-                <div className="text-sm text-gray-600 mt-1">未通过</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-600">{stats.pending}</div>
-                <div className="text-sm text-gray-600 mt-1">待定</div>
+              <div className="grid grid-cols-2 gap-2 text-center mt-3 pt-3 border-t">
+                <div>
+                  <div className="text-xl font-bold text-red-600">{stats.failedInterviews + stats.failedWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">未通过</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-600">{stats.pendingInterviews + stats.pendingWrittenTests}</div>
+                  <div className="text-xs text-gray-600 mt-1">待定</div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -377,26 +444,44 @@ export default function InterviewsPage() {
 
               <Separator />
 
-              {/* 面试复盘 - 大文本框 */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">面试复盘 / 问题记录</Label>
-                <Textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="记录面试中的问题、回答情况、面试官反馈、需要改进的地方...&#10;&#10;建议格式：&#10;&#10;问题1：XXX&#10;回答：XXX&#10;反思：XXX&#10;&#10;问题2：XXX&#10;回答：XXX&#10;面试官反馈：XXX&#10;&#10;整体感受：&#10;- XXX&#10;- XXX&#10;&#10;改进方向：&#10;- XXX&#10;- XXX"
-                  rows={20}
-                  className="font-mono text-sm resize-y min-h-[400px]"
-                />
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
-                  <p className="font-semibold mb-1">💡 复盘建议</p>
-                  <ul className="list-disc list-inside space-y-1 text-xs">
-                    <li>记录每个问题和你的回答</li>
-                    <li>标注面试官的反馈和追问</li>
-                    <li>反思哪些回答得好，哪些需要改进</li>
-                    <li>记录整体感受和下次改进方向</li>
-                  </ul>
-                </div>
-              </div>
+              {/* 编辑表单 - Tabs 组织 */}
+              <Tabs defaultValue="structured" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="structured">📝 结构化问答</TabsTrigger>
+                  <TabsTrigger value="freetext">📄 自由文本</TabsTrigger>
+                </TabsList>
+
+                {/* 结构化问答 */}
+                <TabsContent value="structured" className="space-y-4 mt-4">
+                  <StructuredQAEditor
+                    qaPairs={formData.qa_pairs}
+                    onChange={(pairs) => setFormData({ ...formData, qa_pairs: pairs })}
+                  />
+                </TabsContent>
+
+                {/* 自由文本 */}
+                <TabsContent value="freetext" className="space-y-4 mt-4">
+                  <div className="space-y-3">
+                    <Label className="text-base font-semibold">面试复盘 / 问题记录</Label>
+                    <Textarea
+                      value={formData.notes}
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      placeholder="记录面试中的问题、回答情况、面试官反馈、需要改进的地方...&#10;&#10;建议格式：&#10;&#10;问题1：XXX&#10;回答：XXX&#10;反思：XXX&#10;&#10;问题2：XXX&#10;回答：XXX&#10;面试官反馈：XXX&#10;&#10;整体感受：&#10;- XXX&#10;- XXX&#10;&#10;改进方向：&#10;- XXX&#10;- XXX"
+                      rows={20}
+                      className="font-mono text-sm resize-y min-h-[400px]"
+                    />
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                      <p className="font-semibold mb-1">💡 复盘建议</p>
+                      <ul className="list-disc list-inside space-y-1 text-xs">
+                        <li>记录每个问题和你的回答</li>
+                        <li>标注面试官的反馈和追问</li>
+                        <li>反思哪些回答得好，哪些需要改进</li>
+                        <li>记录整体感受和下次改进方向</li>
+                      </ul>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
 
               {/* 操作按钮 */}
               <div className="flex justify-end gap-3 pt-4 border-t">

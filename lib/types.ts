@@ -7,8 +7,11 @@ export type Priority = 'high' | 'medium' | 'low';
 // 投递渠道
 export type Channel = 'official' | 'boss' | 'liepin' | 'lagou' | 'zhipin' | 'referral' | 'email' | 'other';
 
-// 面试类型
+// 面试类型（形式）
 export type InterviewType = 'onsite' | 'video' | 'phone';
+
+// 面试内容类型
+export type InterviewContentType = 'technical' | 'hr' | 'manager' | 'ceo' | 'other';
 
 // 笔试类型
 export type WrittenTestType = 'online' | 'onsite';
@@ -34,14 +37,24 @@ export type InterviewResult = 'pass' | 'fail' | 'pending';
 // 结束状态
 export type ClosedResult = 'offer' | 'rejected' | 'withdrew' | 'ghosted';
 
+// 问答对
+export interface QAPair {
+  id: string;
+  question: string;
+  answer: string;
+  reflection?: string;
+}
+
 // 面试记录
 export interface Interview {
   id: string;
   date: Date;
   type: InterviewType;
+  content_type?: InterviewContentType;  // 面试内容类型（技术面/HR面等）
   round: number;               // 第几轮
   interviewer?: string;        // 面试官
-  notes?: string;              // 面试反馈
+  notes?: string;              // 自由文本备注
+  qa_pairs?: QAPair[];         // 结构化问答
   result?: InterviewResult;
 }
 

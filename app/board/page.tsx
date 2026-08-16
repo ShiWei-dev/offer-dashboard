@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useJobStore } from '@/lib/store';
 import { filterJobs } from '@/lib/utils';
-import { JobApplication, JobStatus, Priority } from '@/lib/types';
+import { JobApplication, JobStatus, Priority, ClosedResult } from '@/lib/types';
 import { BOARD_COLUMNS } from '@/lib/constants';
 import { PlusIcon, MailIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -243,6 +243,28 @@ function FilteredKanbanBoard({
     setActiveJob(null);
   };
 
+  const handlePriorityChange = (jobId: string, priority: Priority) => {
+    updateJob(jobId, { priority });
+  };
+
+  const handleStatusChange = (jobId: string, status: JobStatus) => {
+    const job = jobs.find(j => j.id === jobId);
+    if (!job) return;
+
+    const updates: Partial<JobApplication> = { status };
+
+    // 如果移动到"已投递"，设置投递日期
+    if (status === 'applied' && !job.applied_date) {
+      updates.applied_date = new Date();
+    }
+
+    updateJob(jobId, updates);
+  };
+
+  const handleResultChange = (jobId: string, result: ClosedResult | null) => {
+    updateJob(jobId, { closed_result: result || undefined });
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -257,6 +279,9 @@ function FilteredKanbanBoard({
             status={status}
             jobs={jobsByStatus[status]}
             onJobClick={onJobClick}
+            onPriorityChange={handlePriorityChange}
+            onStatusChange={handleStatusChange}
+            onResultChange={handleResultChange}
           />
         ))}
       </div>

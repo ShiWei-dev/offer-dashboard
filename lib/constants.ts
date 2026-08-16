@@ -85,3 +85,12 @@ export const DEFAULT_RESUME_VERSIONS = [
   '产品专版',
   '数据分析专版'
 ];
+
+// 面试内容类型配置
+export const INTERVIEW_CONTENT_TYPE_CONFIG = {
+  technical: { label: '技术面', icon: '💻' },
+  hr: { label: 'HR面', icon: '💼' },
+  manager: { label: '主管面', icon: '👔' },
+  ceo: { label: '高管面', icon: '🎯' },
+  other: { label: '其他', icon: '📋' },
+} as const;
