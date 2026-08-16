@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JobTracker - 求职投递管理系统
 
-## Getting Started
+一个现代化的求职投递追踪工具，帮助你高效管理投递进度、面试安排和数据统计。
 
-First, run the development server:
+## ✨ 核心功能
 
+### 1. 📊 看板视图
+- **拖拽式管理**：拖拽卡片快速更新投递状态
+- **4 个状态列**：待投递 → 已投递 → 面试中 → 已完结
+- **卡片信息**：公司、职位、薪资、优先级、投递日期一目了然
+- **实时更新**：自动保存到浏览器本地存储
+
+### 2. 📝 投递管理
+- **详细表单**：记录公司、职位、地点、薪资、JD 链接等信息
+- **投递信息**：选择状态、优先级、投递渠道、简历版本
+- **面试安排**：设置下次面试时间，自动提醒
+- **标签系统**：自定义标签分类管理
+- **备注功能**：记录面试准备、薪资谈判等重要信息
+
+### 3. 📧 邮件追踪（重点功能）
+- **智能解析**：自动识别投递确认邮件
+- **自动提取**：提取公司名、职位名、投递日期、职位链接
+- **支持平台**：Boss直聘、猎聘、拉勾、智联招聘等主流招聘平台
+- **置信度评分**：显示解析准确度，确保数据可靠
+
+### 4. 📈 统计仪表盘
+- **核心指标**：总投递数、回复率、面试邀约、Offer 数量
+- **投递漏斗**：可视化展示各阶段转化率
+- **近期面试**：显示即将到来的面试安排
+- **数据洞察**：平均回复时间、转化率分析
+
+### 5. 🔍 搜索与筛选
+- **全文搜索**：按公司名、职位名、地点搜索
+- **状态筛选**：快速筛选特定状态的投递
+- **优先级筛选**：聚焦高优先级投递
+- **组合筛选**：多条件组合，精准定位
+
+## 🚀 快速开始
+
+### 安装依赖
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 启动开发服务器
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+访问 [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 构建生产版本
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## 📖 使用指南
 
-To learn more about Next.js, take a look at the following resources:
+### 添加投递记录
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**方式 1：手动添加**
+1. 点击"添加投递"按钮
+2. 填写公司名、职位名等基础信息
+3. 选择状态、优先级、投递渠道
+4. 保存即可
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**方式 2：导入邮件**
+1. 点击"导入邮件"按钮
+2. 复制投递确认邮件的主题和正文
+3. 粘贴到对应输入框
+4. 系统自动解析并创建投递记录
 
-## Deploy on Vercel
+### 更新投递状态
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**拖拽更新**：
+- 在看板页面直接拖拽卡片到对应状态列
+- 移动到"已投递"会自动设置投递日期
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**编辑更新**：
+- 点击卡片查看详情
+- 点击"编辑"按钮修改信息
+
+### 查看统计数据
+
+访问首页即可查看：
+- 核心统计指标
+- 投递漏斗图
+- 近期面试安排
+
+## 🎨 技术栈
+
+- **前端框架**：Next.js 15 (App Router)
+- **开发语言**：TypeScript
+- **样式方案**：TailwindCSS
+- **UI 组件**：shadcn/ui
+- **拖拽功能**：@dnd-kit
+- **状态管理**：Zustand
+- **图标库**：Lucide React
+- **日期处理**：date-fns
+- **数据存储**：localStorage (本地浏览器存储)
+
+## 💾 数据存储
+
+### 本地存储
+- 所有数据保存在浏览器 localStorage
+- 自动持久化，刷新页面不丢失
+- 数据仅存在本地，隐私安全
+
+### 导入/导出（待实现）
+- 导出为 JSON 文件备份
+- 导入 JSON 文件恢复数据
+- 方便在不同设备间迁移
+
+## 📧 邮件解析示例
+
+### 支持的邮件格式
+
+**示例 1：Boss直聘**
+```
+主题：您的简历已投递成功 - 字节跳动前端工程师
+发件人：noreply@zhipin.com
+
+正文：
+您好！
+您已成功投递：
+公司：字节跳动
+职位：前端工程师
+地点：北京
+投递日期：2024-01-15
+```
+
+**示例 2：猎聘**
+```
+主题：投递确认 - 阿里巴巴 - 后端开发
+发件人：service@liepin.com
+
+正文：
+您的简历已发送给阿里巴巴
+职位名称：后端开发工程师
+工作地点：杭州
+薪资范围：30-50K
+```
+
+### 解析能力
+- ✅ 公司名提取
+- ✅ 职位名提取
+- ✅ 地点提取
+- ✅ 投递日期提取
+- ✅ 职位链接提取
+- ✅ 投递渠道识别
+
+## 🔮 后续规划
+
+### 第二阶段功能
+- [ ] 简历管理模块
+- [ ] 时间线视图
+- [ ] 浏览器通知提醒
+- [ ] 数据导出（JSON/CSV）
+
+### 第三阶段功能
+- [ ] 云端同步 (Supabase)
+- [ ] 多设备访问
+- [ ] 用户认证
+- [ ] 数据分享
+
+### 高级功能
+- [ ] AI 简历匹配
+- [ ] JD 自动解析
+- [ ] 面试准备建议
+- [ ] 薪资市场分析
+
+## 📄 许可
+
+MIT License
+
+---
+
+**开发日期**：2026-08-16  
+**开发者**：Claude & 用户协作开发
+
