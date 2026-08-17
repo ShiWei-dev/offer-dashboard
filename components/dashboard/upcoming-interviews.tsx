@@ -1,14 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useJobStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatRelativeTime } from '@/lib/utils';
 import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
-import { InterviewContentType, WrittenTestCategory } from '@/lib/types';
+import { InterviewContentType, WrittenTestCategory, JobApplication } from '@/lib/types';
 import { CalendarIcon, ClockIcon, EditIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { ReviewDialog } from '../jobs/review-dialog';
 
 interface UpcomingEvent {
   id: string;
@@ -25,7 +26,9 @@ interface UpcomingEvent {
 
 export function UpcomingInterviews() {
   const { jobs } = useJobStore();
-  const router = useRouter();
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<UpcomingEvent | null>(null);
+  const [selectedJob, setSelectedJob] = useState<JobApplication | null>(null);
 
   // 收集所有即将到来的笔试和面试
   const upcomingEvents: UpcomingEvent[] = [];
@@ -71,20 +74,17 @@ export function UpcomingInterviews() {
 
   // 立即复盘处理函数
   const handleReview = (event: UpcomingEvent) => {
-    // 跳转到看板页，并通过 URL 参数传递信息
-    const params = new URLSearchParams({
-      job: event.jobId,
-      action: 'review',
-      type: event.type,
-      date: event.date.toISOString(),
-      ...(event.interviewContentType && { contentType: event.interviewContentType }),
-      ...(event.writtenTestCategory && { category: event.writtenTestCategory }),
-    });
-    router.push(`/board?${params.toString()}`);
+    const job = jobs.find(j => j.id === event.jobId);
+    if (job) {
+      setSelectedEvent(event);
+      setSelectedJob(job);
+      setReviewDialogOpen(true);
+    }
   };
 
   return (
-    <Card>
+    <>
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CalendarIcon className="w-5 h-5" />
@@ -192,5 +192,19 @@ export function UpcomingInterviews() {
         )}
       </CardContent>
     </Card>
+
+    {/* 复盘对话框 */}
+    {selectedJob && selectedEvent && (
+      <ReviewDialog
+        open={reviewDialogOpen}
+        onOpenChange={setReviewDialogOpen}
+        job={selectedJob}
+        eventType={selectedEvent.type}
+        eventDate={selectedEvent.date}
+        interviewContentType={selectedEvent.interviewContentType}
+        writtenTestCategory={selectedEvent.writtenTestCategory}
+      />
+    )}
+  </>
   );
 }
