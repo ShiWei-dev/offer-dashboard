@@ -336,7 +336,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
                       {job.next_event_type === 'written' ? (
                         <>
                           笔试
-                          {job.next_written_test_category && (
+                          {job.next_written_test_category && WRITTEN_TEST_CATEGORY_CONFIG[job.next_written_test_category] && (
                             <span className="text-xs ml-1">
                               ({WRITTEN_TEST_CATEGORY_CONFIG[job.next_written_test_category].label})
                             </span>
@@ -345,7 +345,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
                       ) : (
                         <>
                           面试
-                          {job.next_interview_content_type && (
+                          {job.next_interview_content_type && INTERVIEW_CONTENT_TYPE_CONFIG[job.next_interview_content_type] && (
                             <span className="text-xs ml-1">
                               ({INTERVIEW_CONTENT_TYPE_CONFIG[job.next_interview_content_type].label})
                             </span>

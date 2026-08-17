@@ -69,6 +69,8 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
       applied_date: formData.applied_date,
       next_interview_date: formData.next_interview_date,
       next_event_type: formData.next_event_type,
+      next_interview_content_type: formData.next_interview_content_type,
+      next_written_test_category: formData.next_written_test_category,
       interviews: formData.interviews || [],
       written_tests: formData.written_tests || [],
       closed_result: formData.closed_result,
