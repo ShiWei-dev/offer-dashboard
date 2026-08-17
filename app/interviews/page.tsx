@@ -14,14 +14,21 @@ import { formatDate } from '@/lib/utils';
 import { CalendarIcon, BuildingIcon, BriefcaseIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Interview, InterviewResult, QAPair } from '@/lib/types';
+import { Interview, InterviewResult, QAPair, WrittenTest } from '@/lib/types';
 import { StructuredQAEditor } from '@/components/interviews/structured-qa-editor';
+import { WrittenTestEditDialog } from '@/components/jobs/written-test-edit-dialog';
 
 export default function InterviewsPage() {
   const { jobs, updateJob } = useJobStore();
   const [selectedType, setSelectedType] = useState<'all' | 'upcoming' | 'past'>('all');
   const [editingInterview, setEditingInterview] = useState<{
     interview: Interview;
+    jobId: string;
+    company: string;
+    position: string;
+  } | null>(null);
+  const [editingWrittenTest, setEditingWrittenTest] = useState<{
+    test: WrittenTest;
     jobId: string;
     company: string;
     position: string;
@@ -136,6 +143,18 @@ export default function InterviewsPage() {
 
     updateJob(editingInterview.jobId, { interviews: updatedInterviews });
     setEditingInterview(null);
+  };
+
+  // 保存笔试编辑
+  const handleWrittenTestSave = (jobId: string, updatedTest: WrittenTest) => {
+    const job = jobs.find(j => j.id === jobId);
+    if (!job) return;
+
+    const updatedTests = job.written_tests.map(t =>
+      t.id === updatedTest.id ? updatedTest : t
+    );
+
+    updateJob(jobId, { written_tests: updatedTests });
   };
 
   return (
@@ -512,8 +531,12 @@ export default function InterviewsPage() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    // TODO: 实现笔试编辑功能
-                                    alert('笔试编辑功能开发中...');
+                                    setEditingWrittenTest({
+                                      test,
+                                      jobId: group.job.id,
+                                      company: group.job.company,
+                                      position: group.job.position,
+                                    });
                                   }}
                                 >
                                   <PencilIcon className="w-4 h-4 mr-1" />
@@ -633,6 +656,19 @@ export default function InterviewsPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* 笔试编辑对话框 */}
+      {editingWrittenTest && (
+        <WrittenTestEditDialog
+          open={!!editingWrittenTest}
+          onOpenChange={(open) => !open && setEditingWrittenTest(null)}
+          test={editingWrittenTest.test}
+          jobId={editingWrittenTest.jobId}
+          company={editingWrittenTest.company}
+          position={editingWrittenTest.position}
+          onSave={handleWrittenTestSave}
+        />
+      )}
     </div>
   );
 }
