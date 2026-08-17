@@ -275,7 +275,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
         </div>
 
         {/* 状态行：进度 + 优先级 + 渠道 */}
-        <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center justify-between gap-2 mb-1.5">
           <div className="flex items-center gap-2">
             {currentProgress && (
               <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
@@ -295,7 +295,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 核心信息区 - 浅色背景 */}
         {(job.location || job.salary_range) && (
-          <div className="bg-gray-50 rounded-lg p-2 mb-2">
+          <div className="bg-gray-50 rounded-lg p-2 mb-1.5">
             <div className="flex items-center gap-4 text-sm text-gray-700">
               {job.location && (
                 <div className="flex items-center gap-1">
@@ -315,7 +315,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 时间线区域 */}
         {(job.applied_date || job.next_interview_date) && (
-          <div className="space-y-1.5 mb-2">
+          <div className="space-y-1.5 mb-1.5">
             <div className="text-xs font-semibold text-gray-500 flex items-center gap-1">
               <CalendarIcon className="w-3 h-3" />
               时间线
@@ -363,7 +363,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* JD 链接 */}
         {job.job_url && (
-          <div className="mb-2">
+          <div className="mb-1.5">
             <a
               href={job.job_url}
               target="_blank"
