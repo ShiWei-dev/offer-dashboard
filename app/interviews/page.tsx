@@ -21,6 +21,7 @@ import { WrittenTestEditDialog } from '@/components/jobs/written-test-edit-dialo
 export default function InterviewsPage() {
   const { jobs, updateJob } = useJobStore();
   const [selectedType, setSelectedType] = useState<'all' | 'upcoming' | 'past'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [editingInterview, setEditingInterview] = useState<{
     interview: Interview;
     jobId: string;
@@ -88,6 +89,16 @@ export default function InterviewsPage() {
   const filteredGroups = sortedGroups.filter(group => {
     const interviews = group.interviews || [];
     const writtenTests = group.job.written_tests || [];
+
+    // 搜索过滤
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const matchCompany = group.job.company.toLowerCase().includes(query);
+      const matchPosition = group.job.position.toLowerCase().includes(query);
+      if (!matchCompany && !matchPosition) {
+        return false;
+      }
+    }
 
     if (selectedType === 'upcoming') {
       // 有即将到来的面试或笔试
@@ -279,25 +290,46 @@ export default function InterviewsPage() {
         </div>
 
         {/* 筛选按钮 */}
-        <div className="flex gap-3">
-          <Button
-            variant={selectedType === 'all' ? 'default' : 'outline'}
-            onClick={() => setSelectedType('all')}
-          >
-            全部 ({stats.total})
-          </Button>
-          <Button
-            variant={selectedType === 'upcoming' ? 'default' : 'outline'}
-            onClick={() => setSelectedType('upcoming')}
-          >
-            待参加 ({stats.upcoming})
-          </Button>
-          <Button
-            variant={selectedType === 'past' ? 'default' : 'outline'}
-            onClick={() => setSelectedType('past')}
-          >
-            已完成 ({stats.total - stats.upcoming})
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div className="flex gap-3">
+            <Button
+              variant={selectedType === 'all' ? 'default' : 'outline'}
+              onClick={() => setSelectedType('all')}
+            >
+              全部 ({stats.total})
+            </Button>
+            <Button
+              variant={selectedType === 'upcoming' ? 'default' : 'outline'}
+              onClick={() => setSelectedType('upcoming')}
+            >
+              待参加 ({stats.upcoming})
+            </Button>
+            <Button
+              variant={selectedType === 'past' ? 'default' : 'outline'}
+              onClick={() => setSelectedType('past')}
+            >
+              已完成 ({stats.total - stats.upcoming})
+            </Button>
+          </div>
+
+          {/* 搜索框 */}
+          <div className="relative w-full sm:w-64">
+            <input
+              type="text"
+              placeholder="搜索公司或职位..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {/* 面试和笔试记录列表 */}
