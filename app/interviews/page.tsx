@@ -292,22 +292,30 @@ export default function InterviewsPage() {
             </Card>
           ) : (
             filteredGroups.map((group) => (
-              <Card key={group.job.id} className="overflow-hidden">
+              <Card key={group.job.id} className="overflow-hidden border-2 shadow-md hover:shadow-lg transition-shadow">
                 {/* 投递信息头部 */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-b p-4">
+                <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b-2 border-gray-200 p-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <BuildingIcon className="w-5 h-5 text-gray-600" />
-                      <span className="font-bold text-lg">{group.job.company}</span>
-                      <BriefcaseIcon className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">{group.job.position}</span>
-                      <Badge variant="outline">{group.interviews.length} 轮面试</Badge>
-                      {group.job.written_tests && group.job.written_tests.length > 0 && (
-                        <Badge variant="outline" className="bg-purple-50">{group.job.written_tests.length} 次笔试</Badge>
-                      )}
+                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <BuildingIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-bold text-xl text-gray-900">{group.job.company}</span>
+                          <span className="text-gray-400">·</span>
+                          <span className="text-gray-700 font-medium">{group.job.position}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="bg-blue-50 border-blue-200">{group.interviews.length} 轮面试</Badge>
+                          {group.job.written_tests && group.job.written_tests.length > 0 && (
+                            <Badge variant="outline" className="bg-purple-50 border-purple-200">{group.job.written_tests.length} 次笔试</Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <Link href={`/board?highlight=${group.job.id}`}>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="outline" size="sm" className="shadow-sm">
                         查看投递
                       </Button>
                     </Link>
@@ -315,7 +323,7 @@ export default function InterviewsPage() {
                 </div>
 
                 {/* 面试记录列表 */}
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-6 space-y-4 bg-gray-50/30">
                   {group.interviews.map((interview) => {
                     const isPast = new Date(interview.date) <= now;
                     const isToday = formatDate(interview.date) === formatDate(now);
