@@ -38,6 +38,7 @@ export default function InterviewsPage() {
     result: 'pending' as InterviewResult,
     qa_pairs: [] as QAPair[],
   });
+  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
 
   // 获取所有有面试记录或笔试记录的投递
   const jobsWithRecords = jobs.filter(job =>
@@ -517,8 +518,32 @@ export default function InterviewsPage() {
                                       <h4 className="font-semibold text-sm text-gray-700 mb-2">
                                         📝 笔试备注
                                       </h4>
-                                      <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap">
-                                        {test.notes}
+                                      <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
+                                        <div
+                                          className={`whitespace-pre-wrap ${
+                                            !expandedNotes.has(test.id) && test.notes.split('\n').length > 5
+                                              ? 'line-clamp-5'
+                                              : ''
+                                          }`}
+                                        >
+                                          {test.notes}
+                                        </div>
+                                        {test.notes.split('\n').length > 5 && (
+                                          <button
+                                            onClick={() => {
+                                              const newExpanded = new Set(expandedNotes);
+                                              if (expandedNotes.has(test.id)) {
+                                                newExpanded.delete(test.id);
+                                              } else {
+                                                newExpanded.add(test.id);
+                                              }
+                                              setExpandedNotes(newExpanded);
+                                            }}
+                                            className="text-blue-600 hover:text-blue-700 text-xs mt-2 font-medium"
+                                          >
+                                            {expandedNotes.has(test.id) ? '收起 ▲' : '展开更多 ▼'}
+                                          </button>
+                                        )}
                                       </div>
                                     </div>
                                   </>
