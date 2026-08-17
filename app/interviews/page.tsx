@@ -258,14 +258,14 @@ export default function InterviewsPage() {
           </Button>
         </div>
 
-        {/* 面试记录列表 */}
+        {/* 面试和笔试记录列表 */}
         <div className="space-y-6">
           {filteredGroups.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center text-gray-500">
                 <CalendarIcon className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg">暂无面试记录</p>
-                <p className="text-sm mt-2">在投递详情中添加面试安排</p>
+                <p className="text-lg">暂无笔试和面试记录</p>
+                <p className="text-sm mt-2">在投递详情中添加笔试或面试安排</p>
               </CardContent>
             </Card>
           ) : (
@@ -279,7 +279,10 @@ export default function InterviewsPage() {
                       <span className="font-bold text-lg">{group.job.company}</span>
                       <BriefcaseIcon className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-700">{group.job.position}</span>
-                      <Badge variant="outline">{group.interviews.length} 轮</Badge>
+                      <Badge variant="outline">{group.interviews.length} 轮面试</Badge>
+                      {group.job.written_tests && group.job.written_tests.length > 0 && (
+                        <Badge variant="outline" className="bg-purple-50">{group.job.written_tests.length} 次笔试</Badge>
+                      )}
                     </div>
                     <Link href={`/board?highlight=${group.job.id}`}>
                       <Button variant="ghost" size="sm">
