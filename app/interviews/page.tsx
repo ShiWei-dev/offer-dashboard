@@ -505,6 +505,21 @@ export default function InterviewsPage() {
                                   </>
                                 )}
                               </div>
+
+                              {/* 操作按钮 */}
+                              <div className="ml-4">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // TODO: 实现笔试编辑功能
+                                    alert('笔试编辑功能开发中...');
+                                  }}
+                                >
+                                  <PencilIcon className="w-4 h-4 mr-1" />
+                                  编辑复盘
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         );
