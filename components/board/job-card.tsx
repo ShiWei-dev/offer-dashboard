@@ -38,6 +38,11 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
   // 计算当前进度
   const getCurrentProgress = () => {
+    // 如果已完结，不显示进度
+    if (job.closed_result) {
+      return null;
+    }
+
     // 如果有笔试记录，找最近的未完成笔试
     if (job.written_tests && job.written_tests.length > 0) {
       const pendingTests = job.written_tests.filter(t =>
