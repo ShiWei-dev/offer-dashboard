@@ -295,7 +295,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 核心信息区 - 浅色背景 */}
         {(job.location || job.salary_range) && (
-          <div className="bg-gray-50 rounded-lg p-3 mb-3">
+          <div className="bg-gray-50 rounded-lg p-2 mb-2">
             <div className="flex items-center gap-4 text-sm text-gray-700">
               {job.location && (
                 <div className="flex items-center gap-1">
@@ -363,7 +363,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* JD 链接 */}
         {job.job_url && (
-          <div className="mb-3">
+          <div className="mb-2">
             <a
               href={job.job_url}
               target="_blank"
@@ -379,7 +379,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 标签 */}
         {job.tags && job.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-3">
+          <div className="flex flex-wrap gap-1 mt-2">
             {job.tags.map((tag, index) => (
               <Badge key={index} variant="outline" className="text-xs">
                 {tag}
@@ -390,7 +390,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 结果标识 */}
         {job.closed_result && (
-          <div className="mt-3 text-center">
+          <div className="mt-2 text-center">
             {job.closed_result === 'offer' && (
               <Badge className="bg-green-600 text-white">
                 ✅ 已获 Offer
