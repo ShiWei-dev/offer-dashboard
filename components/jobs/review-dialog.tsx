@@ -89,6 +89,9 @@ export function ReviewDialog({
       next_interview_content_type: undefined,
     });
 
+    // 成功提示
+    alert('✅ 面试复盘已保存！\n✅ 面试安排已从"近期安排"中移除');
+
     onOpenChange(false);
   };
 
@@ -128,6 +131,10 @@ export function ReviewDialog({
     }
 
     updateJob(job.id, updates);
+
+    // 成功提示
+    alert('✅ 笔试复盘已保存！\n✅ 笔试安排已从"近期安排"中移除');
+
     onOpenChange(false);
   };
 
