@@ -13,8 +13,10 @@ import {
   ExternalLinkIcon,
   PencilIcon,
   Trash2Icon,
-  MailIcon
+  MailIcon,
+  ChevronRightIcon
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface JobDetailProps {
   job: JobApplication;
@@ -182,45 +184,39 @@ export function JobDetail({ job, onEdit, onDelete, onClose }: JobDetailProps) {
           <Separator />
           <div className="space-y-3">
             <h3 className="font-semibold text-lg">📝 笔试记录</h3>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {job.written_tests.map((test) => (
-                <div key={test.id} className="border rounded-lg p-4 space-y-2 bg-purple-50/30">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">
-                        {test.type === 'online' ? '💻 在线笔试' : '📝 现场笔试'}
-                      </span>
-                      {test.duration && (
-                        <span className="text-xs text-gray-500">{test.duration} 分钟</span>
-                      )}
-                    </div>
-                    <Badge variant={
-                      test.result === 'pass' ? 'default' :
-                      test.result === 'fail' ? 'destructive' :
-                      'secondary'
-                    }>
-                      {test.result === 'pass' ? '通过' :
-                       test.result === 'fail' ? '未通过' :
-                       '待定'}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {formatDate(test.date, 'long')}
-                    {test.platform && ` · ${test.platform}`}
-                  </p>
-                  {test.topics && test.topics.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {test.topics.map((topic, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {topic}
+                <Link key={test.id} href="/interviews">
+                  <div className="border rounded-lg p-3 bg-purple-50/30 hover:bg-purple-100/50 transition-colors cursor-pointer group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">
+                          {test.type === 'online' ? '💻' : '📝'}
+                        </span>
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {test.type === 'online' ? '在线笔试' : '现场笔试'}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {formatDate(test.date, 'long')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={
+                          test.result === 'pass' ? 'default' :
+                          test.result === 'fail' ? 'destructive' :
+                          'secondary'
+                        }>
+                          {test.result === 'pass' ? '✅ 通过' :
+                           test.result === 'fail' ? '❌ 未通过' :
+                           '⏳ 待定'}
                         </Badge>
-                      ))}
+                        <ChevronRightIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                      </div>
                     </div>
-                  )}
-                  {test.notes && (
-                    <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">{test.notes}</p>
-                  )}
-                </div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -233,31 +229,40 @@ export function JobDetail({ job, onEdit, onDelete, onClose }: JobDetailProps) {
           <Separator />
           <div className="space-y-3">
             <h3 className="font-semibold text-lg">🎯 面试记录</h3>
-            <div className="space-y-3">
-              {job.interviews.map((interview, index) => (
-                <div key={interview.id} className="border rounded-lg p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">第 {interview.round} 轮面试</span>
-                    <Badge variant={
-                      interview.result === 'pass' ? 'default' :
-                      interview.result === 'fail' ? 'destructive' :
-                      'secondary'
-                    }>
-                      {interview.result === 'pass' ? '通过' :
-                       interview.result === 'fail' ? '未通过' :
-                       '待定'}
-                    </Badge>
+            <div className="space-y-2">
+              {job.interviews.map((interview) => (
+                <Link key={interview.id} href="/interviews">
+                  <div className="border rounded-lg p-3 bg-blue-50/30 hover:bg-blue-100/50 transition-colors cursor-pointer group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">
+                          {interview.type === 'onsite' ? '🏢' :
+                           interview.type === 'video' ? '📹' : '📞'}
+                        </span>
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            第 {interview.round} 轮面试
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {formatDate(interview.date, 'long')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={
+                          interview.result === 'pass' ? 'default' :
+                          interview.result === 'fail' ? 'destructive' :
+                          'secondary'
+                        }>
+                          {interview.result === 'pass' ? '✅ 通过' :
+                           interview.result === 'fail' ? '❌ 未通过' :
+                           '⏳ 待定'}
+                        </Badge>
+                        <ChevronRightIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {formatDate(interview.date, 'long')} · {interview.type === 'onsite' ? '现场' : interview.type === 'video' ? '视频' : '电话'}
-                  </p>
-                  {interview.interviewer && (
-                    <p className="text-sm text-gray-600">面试官：{interview.interviewer}</p>
-                  )}
-                  {interview.notes && (
-                    <p className="text-sm text-gray-700 mt-2">{interview.notes}</p>
-                  )}
-                </div>
+                </Link>
               ))}
             </div>
           </div>
