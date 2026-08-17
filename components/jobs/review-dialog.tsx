@@ -77,20 +77,18 @@ export function ReviewDialog({
 
     const updatedInterviews = [...(job.interviews || []), newInterview];
 
-    const updatedJob = {
-      ...job,
+    console.log('保存面试记录:', newInterview);
+    console.log('新的面试列表:', updatedInterviews);
+
+    // 正确调用 updateJob(id, updates)
+    updateJob(job.id, {
       interviews: updatedInterviews,
       // 清除下次面试提醒
       next_interview_date: undefined,
       next_event_type: undefined,
       next_interview_content_type: undefined,
-      updated_at: new Date(),
-    };
+    });
 
-    console.log('保存面试记录:', newInterview);
-    console.log('更新后的投递:', updatedJob);
-
-    updateJob(updatedJob);
     onOpenChange(false);
   };
 
@@ -114,22 +112,22 @@ export function ReviewDialog({
 
     const updatedTests = [...(job.written_tests || []), newTest];
 
-    const updatedJob = {
-      ...job,
+    console.log('保存笔试记录:', newTest);
+    console.log('新的笔试列表:', updatedTests);
+
+    // 正确调用 updateJob(id, updates)
+    const updates: any = {
       written_tests: updatedTests,
-      // 清除下次笔试提醒
-      ...(job.next_event_type === 'written' && {
-        next_interview_date: undefined,
-        next_event_type: undefined,
-        next_written_test_category: undefined,
-      }),
-      updated_at: new Date(),
     };
 
-    console.log('保存笔试记录:', newTest);
-    console.log('更新后的投递:', updatedJob);
+    // 清除下次笔试提醒
+    if (job.next_event_type === 'written') {
+      updates.next_interview_date = undefined;
+      updates.next_event_type = undefined;
+      updates.next_written_test_category = undefined;
+    }
 
-    updateJob(updatedJob);
+    updateJob(job.id, updates);
     onOpenChange(false);
   };
 
