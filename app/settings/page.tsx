@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useJobStore } from '@/lib/store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,16 @@ import Link from 'next/link';
 export default function SettingsPage() {
   const { jobs, importJobs, clearAllJobs } = useJobStore();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [storageSize, setStorageSize] = useState('0 KB');
+
+  // 客户端计算存储大小
+  useEffect(() => {
+    const data = localStorage.getItem('job-tracker-storage');
+    if (data) {
+      const bytes = new Blob([data]).size;
+      setStorageSize((bytes / 1024).toFixed(2) + ' KB');
+    }
+  }, [jobs]); // 依赖 jobs，数据变化时重新计算
 
   // 导出数据为 JSON
   const handleExport = () => {
@@ -79,15 +89,6 @@ export default function SettingsPage() {
     }
   };
 
-  // 获取存储大小
-  const getStorageSize = () => {
-    if (typeof window === 'undefined') return '0 KB';
-    const data = localStorage.getItem('job-tracker-storage');
-    if (!data) return '0 KB';
-    const bytes = new Blob([data]).size;
-    return (bytes / 1024).toFixed(2) + ' KB';
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 头部 */}
@@ -142,7 +143,7 @@ export default function SettingsPage() {
                 <div className="text-sm text-gray-600 mt-1">笔试记录</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-3xl font-bold text-orange-600">{getStorageSize()}</div>
+                <div className="text-3xl font-bold text-orange-600">{storageSize}</div>
                 <div className="text-sm text-gray-600 mt-1">存储大小</div>
               </div>
             </div>
