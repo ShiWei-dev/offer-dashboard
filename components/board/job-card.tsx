@@ -315,21 +315,21 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 时间线区域 */}
         {(job.applied_date || job.next_interview_date) && (
-          <div className="space-y-1 mb-1">
+          <div className="space-y-1 mb-0.5">
             <div className="text-xs font-semibold text-gray-500 flex items-center gap-1">
               <CalendarIcon className="w-3 h-3" />
               时间线
             </div>
             <div className="space-y-0.5 text-xs pl-4 border-l-2 border-gray-200">
               {job.applied_date && (
-                <div className="flex items-center gap-2 text-gray-600">
+                <div className="flex items-center gap-2 text-gray-600 py-0.5">
                   <span>📅</span>
                   <span>{formatRelativeTime(job.applied_date)}</span>
                   <span className="text-gray-400">(已投递)</span>
                 </div>
               )}
               {job.next_interview_date && (
-                <div className="bg-orange-50 text-orange-700 px-2 py-1.5 rounded-md font-medium -ml-4">
+                <div className="bg-orange-50 text-orange-700 px-2 py-1 rounded-md font-medium -ml-4">
                   <div className="flex items-center gap-2">
                     <span>📅</span>
                     <span>
