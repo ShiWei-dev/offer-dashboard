@@ -81,6 +81,7 @@ export default function SettingsPage() {
 
   // 获取存储大小
   const getStorageSize = () => {
+    if (typeof window === 'undefined') return '0 KB';
     const data = localStorage.getItem('job-tracker-storage');
     if (!data) return '0 KB';
     const bytes = new Blob([data]).size;
