@@ -174,17 +174,19 @@ export function UpcomingInterviews() {
                     </div>
                   )}
 
-                  {/* 操作按钮 */}
-                  <div className="mt-3 flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleReview(event)}
-                      className="flex items-center gap-1"
-                    >
-                      <EditIcon className="w-3 h-3" />
-                      立即复盘
-                    </Button>
-                  </div>
+                  {/* 操作按钮 - 只在过期后显示 */}
+                  {isPast && (
+                    <div className="mt-3 flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleReview(event)}
+                        className="flex items-center gap-1"
+                      >
+                        <EditIcon className="w-3 h-3" />
+                        立即复盘
+                      </Button>
+                    </div>
+                  )}
                 </div>
               );
             })}
