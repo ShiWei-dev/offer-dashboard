@@ -392,6 +392,95 @@ export default function InterviewsPage() {
                       </div>
                     );
                   })}
+
+                  {/* 笔试记录列表 */}
+                  {group.job.written_tests && group.job.written_tests.length > 0 && (
+                    <>
+                      <Separator className="my-6" />
+                      <h3 className="font-semibold text-lg text-gray-700 mb-4">📝 笔试记录</h3>
+                      {group.job.written_tests.map((test) => {
+                        const isPast = new Date(test.date) <= now;
+                        const isToday = formatDate(test.date) === formatDate(now);
+
+                        return (
+                          <div
+                            key={test.id}
+                            className={`p-4 rounded-lg border ${
+                              !isPast ? 'border-purple-300 bg-purple-50/50' : 'border-gray-200 bg-white'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                {/* 笔试信息 */}
+                                <div className="flex items-center gap-4 mb-3">
+                                  <Badge variant={test.result === 'pass' ? 'default' : test.result === 'fail' ? 'destructive' : 'secondary'}>
+                                    {test.result === 'pass' ? '✅ 通过' : test.result === 'fail' ? '❌ 未通过' : '⏳ 待定'}
+                                  </Badge>
+                                  {!isPast && (
+                                    <Badge className="bg-orange-600 text-white">
+                                      {isToday ? '今天' : '即将进行'}
+                                    </Badge>
+                                  )}
+                                  <span className="text-gray-600 flex items-center gap-1">
+                                    <CalendarIcon className="w-4 h-4" />
+                                    {formatDate(test.date, 'long')}
+                                  </span>
+                                  {test.type && (
+                                    <Badge variant="outline">
+                                      {test.type === 'online' ? '💻 在线笔试' : '📝 现场笔试'}
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {/* 笔试详情 */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-3">
+                                  {test.category && (
+                                    <div>
+                                      <span className="text-gray-500">类型：</span>
+                                      <span className="font-medium">{test.category}</span>
+                                    </div>
+                                  )}
+                                  {test.platform && (
+                                    <div>
+                                      <span className="text-gray-500">平台：</span>
+                                      <span className="font-medium">{test.platform}</span>
+                                    </div>
+                                  )}
+                                  {test.duration && (
+                                    <div>
+                                      <span className="text-gray-500">时长：</span>
+                                      <span className="font-medium">{test.duration} 分钟</span>
+                                    </div>
+                                  )}
+                                  {test.topics && test.topics.length > 0 && (
+                                    <div>
+                                      <span className="text-gray-500">题目数：</span>
+                                      <span className="font-medium">{test.topics.length} 题</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* 笔试备注 */}
+                                {test.notes && (
+                                  <>
+                                    <Separator className="my-4" />
+                                    <div>
+                                      <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                                        📝 笔试备注
+                                      </h4>
+                                      <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap">
+                                        {test.notes}
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
                 </CardContent>
               </Card>
             ))
