@@ -4,6 +4,8 @@ import { useJobStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate, formatRelativeTime } from '@/lib/utils';
+import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
+import { InterviewContentType, WrittenTestCategory } from '@/lib/types';
 import { CalendarIcon, ClockIcon } from 'lucide-react';
 
 interface UpcomingEvent {
@@ -14,6 +16,8 @@ interface UpcomingEvent {
   type: 'written' | 'interview';
   round?: number;
   totalInterviews?: number;
+  interviewContentType?: InterviewContentType;
+  writtenTestCategory?: WrittenTestCategory;
 }
 
 export function UpcomingInterviews() {
@@ -32,6 +36,8 @@ export function UpcomingInterviews() {
         date: job.next_interview_date,
         type: job.next_event_type || 'interview',
         totalInterviews: job.interviews.length,
+        interviewContentType: job.next_interview_content_type,
+        writtenTestCategory: job.next_written_test_category,
       });
     }
 
@@ -97,7 +103,25 @@ export function UpcomingInterviews() {
                       <div className="flex items-center gap-2">
                         <h4 className="font-semibold text-gray-900">{event.company}</h4>
                         <Badge variant="outline" className="text-xs">
-                          {event.type === 'written' ? '📝 笔试' : '🎯 面试'}
+                          {event.type === 'written' ? (
+                            <>
+                              📝 笔试
+                              {event.writtenTestCategory && (
+                                <span className="ml-1">
+                                  - {WRITTEN_TEST_CATEGORY_CONFIG[event.writtenTestCategory].label}
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              🎯 面试
+                              {event.interviewContentType && (
+                                <span className="ml-1">
+                                  - {INTERVIEW_CONTENT_TYPE_CONFIG[event.interviewContentType].label}
+                                </span>
+                              )}
+                            </>
+                          )}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-600">{event.position}</p>

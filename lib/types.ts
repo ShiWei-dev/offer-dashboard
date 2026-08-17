@@ -16,6 +16,9 @@ export type InterviewContentType = 'technical' | 'hr' | 'manager' | 'ceo' | 'oth
 // 笔试类型
 export type WrittenTestType = 'online' | 'onsite';
 
+// 笔试题目类型
+export type WrittenTestCategory = 'algorithm' | 'aptitude' | 'personality' | 'technical' | 'mixed' | 'other';
+
 // 笔试结果
 export type WrittenTestResult = 'pass' | 'fail' | 'pending';
 
@@ -83,6 +86,8 @@ export interface JobApplication {
   written_tests: WrittenTest[]; // 笔试记录
   next_interview_date?: Date;  // 下次笔试/面试时间
   next_event_type?: 'written' | 'interview'; // 下次安排的类型
+  next_interview_content_type?: InterviewContentType; // 下次面试的内容类型（技术/HR等）
+  next_written_test_category?: WrittenTestCategory;   // 下次笔试的题目类型（算法/测评等）
 
   // 结果
   closed_result?: ClosedResult; // 结束状态

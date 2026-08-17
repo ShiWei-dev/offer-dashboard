@@ -94,3 +94,13 @@ export const INTERVIEW_CONTENT_TYPE_CONFIG = {
   ceo: { label: '高管面', icon: '🎯' },
   other: { label: '其他', icon: '📋' },
 } as const;
+
+// 笔试题目类型配置
+export const WRITTEN_TEST_CATEGORY_CONFIG = {
+  algorithm: { label: '算法题', icon: '💻' },
+  aptitude: { label: '行测', icon: '📊' },
+  personality: { label: '性格测评', icon: '🧠' },
+  technical: { label: '专业题', icon: '📝' },
+  mixed: { label: '综合测试', icon: '📋' },
+  other: { label: '其他', icon: '❓' },
+} as const;

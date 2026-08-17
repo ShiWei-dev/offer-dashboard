@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { PRIORITY_CONFIG, CHANNEL_CONFIG, STATUS_CONFIG } from '@/lib/constants';
+import { PRIORITY_CONFIG, CHANNEL_CONFIG, STATUS_CONFIG, INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
 import { formatRelativeTime, cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -121,17 +121,20 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
     >
       <Card
         className={cn(
-          'p-4 cursor-pointer hover:shadow-md transition-all duration-200',
-          'hover:-translate-y-0.5 border-l-4',
-          job.priority === 'high' && 'border-l-red-500',
-          job.priority === 'medium' && 'border-l-yellow-500',
-          job.priority === 'low' && 'border-l-gray-400'
+          'p-4 cursor-pointer hover:shadow-lg transition-all duration-200',
+          'hover:-translate-y-1 border-t-4 relative overflow-hidden',
+          job.priority === 'high' && 'border-t-red-500',
+          job.priority === 'medium' && 'border-t-yellow-500',
+          job.priority === 'low' && 'border-t-gray-400'
         )}
         onClick={onClick}
       >
-        {/* 标题和快速操作 */}
-        <div className="flex items-start justify-between gap-2 mb-3">
-          <h3 className="font-semibold text-gray-900 text-base flex-1">{job.company}</h3>
+        {/* 顶层：公司名 + 快速操作 */}
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="flex-1">
+            <h3 className="font-bold text-gray-900 text-base mb-1">{job.company}</h3>
+            <p className="text-sm text-gray-700">{job.position}</p>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={<Button variant="ghost" size="icon" className="h-7 w-7 -mt-1" />}
@@ -271,17 +274,17 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
           </DropdownMenu>
         </div>
 
-        {/* 优先级、渠道和进度 */}
-        <div className="flex items-center justify-between gap-2 mb-2">
+        {/* 状态行：进度 + 优先级 + 渠道 */}
+        <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">
-              {priorityConfig.icon} {priorityConfig.label}
-            </Badge>
             {currentProgress && (
-              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+              <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
                 {currentProgress}
               </Badge>
             )}
+            <Badge variant="secondary" className="text-xs">
+              {priorityConfig.icon} {priorityConfig.label}
+            </Badge>
           </div>
           {job.channel && (
             <span className="text-xs text-gray-500">
@@ -290,65 +293,89 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
           )}
         </div>
 
-        {/* 职位名 */}
-        <p className="text-sm text-gray-700 mb-2">
-          {job.position}
-        </p>
-
-        {/* 详细信息 - 紧凑布局 */}
-        <div className="space-y-1.5 text-xs text-gray-600">
-          {/* 地点和薪资同行 */}
-          {(job.location || job.salary_range) && (
-            <div className="flex items-center gap-3">
+        {/* 核心信息区 - 浅色背景 */}
+        {(job.location || job.salary_range) && (
+          <div className="bg-gray-50 rounded-lg p-3 mb-3">
+            <div className="flex items-center gap-4 text-sm text-gray-700">
               {job.location && (
                 <div className="flex items-center gap-1">
-                  <MapPinIcon className="w-3 h-3" />
+                  <MapPinIcon className="w-4 h-4" />
                   <span>{job.location}</span>
                 </div>
               )}
               {job.salary_range && (
                 <div className="flex items-center gap-1">
-                  <DollarSignIcon className="w-3 h-3" />
+                  <DollarSignIcon className="w-4 h-4" />
                   <span>{job.salary_range}</span>
                 </div>
               )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* 投递日期 */}
-          {job.applied_date && (
-            <div className="flex items-center gap-1">
+        {/* 时间线区域 */}
+        {(job.applied_date || job.next_interview_date) && (
+          <div className="space-y-2 mb-3">
+            <div className="text-xs font-semibold text-gray-500 flex items-center gap-1">
               <CalendarIcon className="w-3 h-3" />
-              <span>{formatRelativeTime(job.applied_date)}</span>
+              时间线
             </div>
-          )}
-
-          {/* 下次面试 */}
-          {job.next_interview_date && (
-            <div className="flex items-center gap-1 text-orange-600 font-medium">
-              <CalendarIcon className="w-3 h-3" />
-              <span>
-                {job.next_event_type === 'written' ? '笔试' : '面试'}: {formatRelativeTime(job.next_interview_date)}
-              </span>
+            <div className="space-y-1.5 text-xs pl-4 border-l-2 border-gray-200">
+              {job.applied_date && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <span>📅</span>
+                  <span>{formatRelativeTime(job.applied_date)}</span>
+                  <span className="text-gray-400">(已投递)</span>
+                </div>
+              )}
+              {job.next_interview_date && (
+                <div className="bg-orange-50 text-orange-700 px-2 py-1.5 rounded-md font-medium -ml-4">
+                  <div className="flex items-center gap-2">
+                    <span>📅</span>
+                    <span>
+                      {job.next_event_type === 'written' ? (
+                        <>
+                          笔试
+                          {job.next_written_test_category && (
+                            <span className="text-xs ml-1">
+                              ({WRITTEN_TEST_CATEGORY_CONFIG[job.next_written_test_category].label})
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          面试
+                          {job.next_interview_content_type && (
+                            <span className="text-xs ml-1">
+                              ({INTERVIEW_CONTENT_TYPE_CONFIG[job.next_interview_content_type].label})
+                            </span>
+                          )}
+                        </>
+                      )}
+                      : {formatRelativeTime(job.next_interview_date)}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* JD 链接 */}
-          {job.job_url && (
-            <div className="flex items-center gap-1 text-blue-600">
+        {/* JD 链接 */}
+        {job.job_url && (
+          <div className="mb-3">
+            <a
+              href={job.job_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 text-xs text-blue-600 hover:underline"
+            >
               <ExternalLinkIcon className="w-3 h-3" />
-              <a
-                href={job.job_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="hover:underline text-xs"
-              >
-                查看职位详情
-              </a>
-            </div>
-          )}
-        </div>
+              查看职位详情
+            </a>
+          </div>
+        )}
 
         {/* 标签 */}
         {job.tags && job.tags.length > 0 && (

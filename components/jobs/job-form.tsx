@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { JobApplication, JobStatus, Priority, Channel, Interview, WrittenTest } from '@/lib/types';
+import { JobApplication, JobStatus, Priority, Channel, Interview, WrittenTest, InterviewContentType, WrittenTestCategory } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -261,33 +261,71 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="next_interview">下次笔试/面试时间</Label>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <Input
-                id="next_interview"
-                type="datetime-local"
-                value={formData.next_interview_date ?
-                  new Date(formData.next_interview_date.getTime() - formData.next_interview_date.getTimezoneOffset() * 60000)
-                    .toISOString().slice(0, 16) : ''}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  next_interview_date: e.target.value ? new Date(e.target.value) : undefined
-                })}
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Input
+              id="next_interview"
+              type="datetime-local"
+              value={formData.next_interview_date ?
+                new Date(formData.next_interview_date.getTime() - formData.next_interview_date.getTimezoneOffset() * 60000)
+                  .toISOString().slice(0, 16) : ''}
+              onChange={(e) => setFormData({
+                ...formData,
+                next_interview_date: e.target.value ? new Date(e.target.value) : undefined
+              })}
+            />
             <Select
               value={formData.next_event_type || ''}
               onValueChange={(value: any) => setFormData({ ...formData, next_event_type: value })}
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger>
                 <SelectValue placeholder="类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="written">📝 笔试</SelectItem>
                 <SelectItem value="interview">🎯 面试</SelectItem>
+                <SelectItem value="written">📝 笔试</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {/* 面试类型选择 */}
+          {formData.next_event_type === 'interview' && (
+            <Select
+              value={formData.next_interview_content_type || ''}
+              onValueChange={(value: any) => setFormData({ ...formData, next_interview_content_type: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="选择面试类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="technical">💻 技术面</SelectItem>
+                <SelectItem value="hr">💼 HR面</SelectItem>
+                <SelectItem value="manager">👔 主管面</SelectItem>
+                <SelectItem value="ceo">🎯 高管面</SelectItem>
+                <SelectItem value="other">📋 其他</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+
+          {/* 笔试类型选择 */}
+          {formData.next_event_type === 'written' && (
+            <Select
+              value={formData.next_written_test_category || ''}
+              onValueChange={(value: any) => setFormData({ ...formData, next_written_test_category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="选择笔试类型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="algorithm">💻 算法题</SelectItem>
+                <SelectItem value="aptitude">📊 行测</SelectItem>
+                <SelectItem value="personality">🧠 性格测评</SelectItem>
+                <SelectItem value="technical">📝 专业题</SelectItem>
+                <SelectItem value="mixed">📋 综合测试</SelectItem>
+                <SelectItem value="other">❓ 其他</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+
           <p className="text-xs text-gray-500">用于提醒即将到来的笔试或面试</p>
         </div>
       </div>
