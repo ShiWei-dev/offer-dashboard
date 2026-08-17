@@ -75,15 +75,20 @@ export function ReviewDialog({
       qa_pairs: interviewData.qa_pairs,
     };
 
+    const updatedInterviews = [...(job.interviews || []), newInterview];
+
     const updatedJob = {
       ...job,
-      interviews: [...job.interviews, newInterview],
+      interviews: updatedInterviews,
       // 清除下次面试提醒
       next_interview_date: undefined,
       next_event_type: undefined,
       next_interview_content_type: undefined,
       updated_at: new Date(),
     };
+
+    console.log('保存面试记录:', newInterview);
+    console.log('更新后的投递:', updatedJob);
 
     updateJob(updatedJob);
     onOpenChange(false);
@@ -107,9 +112,11 @@ export function ReviewDialog({
       result: writtenTestData.result as WrittenTestResult,
     };
 
+    const updatedTests = [...(job.written_tests || []), newTest];
+
     const updatedJob = {
       ...job,
-      written_tests: [...job.written_tests, newTest],
+      written_tests: updatedTests,
       // 清除下次笔试提醒
       ...(job.next_event_type === 'written' && {
         next_interview_date: undefined,
@@ -118,6 +125,9 @@ export function ReviewDialog({
       }),
       updated_at: new Date(),
     };
+
+    console.log('保存笔试记录:', newTest);
+    console.log('更新后的投递:', updatedJob);
 
     updateJob(updatedJob);
     onOpenChange(false);

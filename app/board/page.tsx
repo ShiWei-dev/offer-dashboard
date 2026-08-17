@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { KanbanBoard } from '@/components/board/kanban-board';
 import { KanbanColumn } from '@/components/board/kanban-column';
 import { JobCard } from '@/components/board/job-card';
@@ -32,40 +31,16 @@ import {
 
 export default function BoardPage() {
   const { jobs, addJob, updateJob, deleteJob } = useJobStore();
-  const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = useState<JobApplication | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEmailImportOpen, setIsEmailImportOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
-  const [reviewData, setReviewData] = useState<any>(null);
 
   // 筛选状态
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilters, setStatusFilters] = useState<JobStatus[]>([]);
   const [priorityFilters, setPriorityFilters] = useState<Priority[]>([]);
-
-  // 处理 URL 参数 - 自动打开详情页进行复盘
-  useEffect(() => {
-    const jobId = searchParams.get('job');
-    const action = searchParams.get('action');
-
-    if (jobId && action === 'review') {
-      const job = jobs.find(j => j.id === jobId);
-      if (job) {
-        setSelectedJob(job);
-        setIsDetailOpen(true);
-
-        // 收集复盘数据
-        setReviewData({
-          type: searchParams.get('type'),
-          date: searchParams.get('date'),
-          contentType: searchParams.get('contentType'),
-          category: searchParams.get('category'),
-        });
-      }
-    }
-  }, [searchParams, jobs]);
 
   // 应用筛选
   const filteredJobs = filterJobs(jobs, {
@@ -185,7 +160,6 @@ export default function BoardPage() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onClose={() => setIsDetailOpen(false)}
-                reviewData={reviewData}
               />
             )}
           </div>

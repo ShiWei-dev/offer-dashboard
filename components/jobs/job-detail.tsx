@@ -1,15 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { JobApplication } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { STATUS_CONFIG, PRIORITY_CONFIG, CHANNEL_CONFIG } from '@/lib/constants';
 import { formatDate, formatRelativeTime } from '@/lib/utils';
-import { InterviewManager } from './interview-manager';
-import { WrittenTestManager } from './written-test-manager';
-import { useJobStore } from '@/lib/store';
 import {
   CalendarIcon,
   MapPinIcon,
@@ -25,43 +21,11 @@ interface JobDetailProps {
   onEdit: () => void;
   onDelete: () => void;
   onClose: () => void;
-  reviewData?: any;  // 复盘数据
 }
 
-export function JobDetail({ job, onEdit, onDelete, onClose, reviewData }: JobDetailProps) {
+export function JobDetail({ job, onEdit, onDelete, onClose }: JobDetailProps) {
   const statusConfig = STATUS_CONFIG[job.status];
   const priorityConfig = PRIORITY_CONFIG[job.priority];
-  const { updateJob } = useJobStore();
-
-  // 处理面试记录更新
-  const handleInterviewsChange = (interviews: any[]) => {
-    const updatedJob = {
-      ...job,
-      interviews,
-      // 如果添加了面试记录，清除 next_interview_date
-      next_interview_date: undefined,
-      next_event_type: undefined,
-      next_interview_content_type: undefined,
-      updated_at: new Date(),
-    };
-    updateJob(updatedJob);
-  };
-
-  // 处理笔试记录更新
-  const handleWrittenTestsChange = (written_tests: any[]) => {
-    const updatedJob = {
-      ...job,
-      written_tests,
-      // 如果添加了笔试记录，清除 next_interview_date（如果是笔试类型）
-      ...(job.next_event_type === 'written' && {
-        next_interview_date: undefined,
-        next_event_type: undefined,
-        next_written_test_category: undefined,
-      }),
-      updated_at: new Date(),
-    };
-    updateJob(updatedJob);
-  };
 
   return (
     <div className="space-y-6">
@@ -361,26 +325,6 @@ export function JobDetail({ job, onEdit, onDelete, onClose, reviewData }: JobDet
           </div>
         </>
       )}
-
-      {/* 快速复盘 - 面试和笔试记录管理 */}
-      <Separator />
-      <div className="space-y-4">
-        <h3 className="font-semibold text-lg">📝 快速复盘</h3>
-
-        {/* 面试记录管理 */}
-        <InterviewManager
-          interviews={job.interviews || []}
-          onChange={handleInterviewsChange}
-          reviewData={reviewData?.type === 'interview' ? reviewData : undefined}
-        />
-
-        {/* 笔试记录管理 */}
-        <WrittenTestManager
-          writtenTests={job.written_tests || []}
-          onChange={handleWrittenTestsChange}
-          reviewData={reviewData?.type === 'written' ? reviewData : undefined}
-        />
-      </div>
 
       {/* 元数据 */}
       <Separator />
