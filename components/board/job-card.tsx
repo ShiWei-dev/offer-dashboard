@@ -130,7 +130,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
         onClick={onClick}
       >
         {/* 顶层：公司名 + 快速操作 */}
-        <div className="flex items-start justify-between gap-2 mb-1">
+        <div className="flex items-start justify-between gap-2 mb-0.5">
           <div className="flex-1">
             <h3 className="font-bold text-gray-900 text-base mb-0.5">{job.company}</h3>
             <p className="text-sm text-gray-700">{job.position}</p>
@@ -275,7 +275,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
         </div>
 
         {/* 状态行：进度 + 优先级 + 渠道 */}
-        <div className="flex items-center justify-between gap-2 mb-1">
+        <div className="flex items-center justify-between gap-2 mb-0.5">
           <div className="flex items-center gap-2">
             {currentProgress && (
               <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
@@ -295,7 +295,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 核心信息区 - 浅色背景 */}
         {(job.location || job.salary_range) && (
-          <div className="bg-gray-50 rounded-lg p-2 mb-1">
+          <div className="bg-gray-50 rounded-lg p-2 mb-0.5">
             <div className="flex items-center gap-4 text-sm text-gray-700">
               {job.location && (
                 <div className="flex items-center gap-1">
@@ -363,7 +363,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* JD 链接 */}
         {job.job_url && (
-          <div className="mb-1">
+          <div className="mb-0.5">
             <a
               href={job.job_url}
               target="_blank"
@@ -379,7 +379,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 标签 */}
         {job.tags && job.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
+          <div className="flex flex-wrap gap-1 mt-0.5">
             {job.tags.map((tag, index) => (
               <Badge key={index} variant="outline" className="text-xs">
                 {tag}
@@ -390,7 +390,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 结果标识 */}
         {job.closed_result && (
-          <div className="mt-1 text-center">
+          <div className="mt-0.5 text-center">
             {job.closed_result === 'offer' && (
               <Badge className="bg-green-600 text-white">
                 ✅ 已获 Offer
