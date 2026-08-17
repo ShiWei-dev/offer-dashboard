@@ -121,7 +121,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
     >
       <Card
         className={cn(
-          'p-4 cursor-pointer hover:shadow-lg transition-all duration-200',
+          'p-3 cursor-pointer hover:shadow-lg transition-all duration-200',
           'hover:-translate-y-1 border-t-4 relative overflow-hidden',
           job.priority === 'high' && 'border-t-red-500',
           job.priority === 'medium' && 'border-t-yellow-500',
@@ -130,9 +130,9 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
         onClick={onClick}
       >
         {/* 顶层：公司名 + 快速操作 */}
-        <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-start justify-between gap-2 mb-1.5">
           <div className="flex-1">
-            <h3 className="font-bold text-gray-900 text-base mb-1">{job.company}</h3>
+            <h3 className="font-bold text-gray-900 text-base mb-0.5">{job.company}</h3>
             <p className="text-sm text-gray-700">{job.position}</p>
           </div>
           <DropdownMenu>
@@ -275,7 +275,7 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
         </div>
 
         {/* 状态行：进度 + 优先级 + 渠道 */}
-        <div className="flex items-center justify-between gap-2 mb-3">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-2">
             {currentProgress && (
               <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
@@ -315,12 +315,12 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
 
         {/* 时间线区域 */}
         {(job.applied_date || job.next_interview_date) && (
-          <div className="space-y-2 mb-3">
+          <div className="space-y-1.5 mb-2">
             <div className="text-xs font-semibold text-gray-500 flex items-center gap-1">
               <CalendarIcon className="w-3 h-3" />
               时间线
             </div>
-            <div className="space-y-1.5 text-xs pl-4 border-l-2 border-gray-200">
+            <div className="space-y-1 text-xs pl-4 border-l-2 border-gray-200">
               {job.applied_date && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <span>📅</span>
