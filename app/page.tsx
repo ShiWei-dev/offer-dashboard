@@ -5,7 +5,7 @@ import { StatsCards } from '@/components/dashboard/stats-cards';
 import { FunnelChart } from '@/components/dashboard/funnel-chart';
 import { UpcomingInterviews } from '@/components/dashboard/upcoming-interviews';
 import { Button } from '@/components/ui/button';
-import { PlusIcon, LayoutDashboardIcon, MailIcon, CalendarIcon } from 'lucide-react';
+import { PlusIcon, LayoutDashboardIcon, MailIcon, CalendarIcon, DatabaseIcon } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -34,6 +34,13 @@ export default function Home() {
                 <div className="flex items-center gap-2 px-5 py-3 rounded-lg border border-gray-200 hover:border-purple-500 hover:bg-purple-50 transition-all cursor-pointer">
                   <CalendarIcon className="w-5 h-5 text-purple-600" />
                   <span className="font-medium text-gray-900">面试记录</span>
+                </div>
+              </Link>
+
+              <Link href="/settings">
+                <div className="flex items-center gap-2 px-5 py-3 rounded-lg border border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all cursor-pointer">
+                  <DatabaseIcon className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-gray-900">数据管理</span>
                 </div>
               </Link>
             </div>
