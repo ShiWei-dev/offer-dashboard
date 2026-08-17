@@ -32,42 +32,64 @@ export default function InterviewsPage() {
     qa_pairs: [] as QAPair[],
   });
 
-  // 获取所有有面试记录的投递
-  const jobsWithInterviews = jobs.filter(job => job.interviews && job.interviews.length > 0);
+  // 获取所有有面试记录或笔试记录的投递
+  const jobsWithRecords = jobs.filter(job =>
+    (job.interviews && job.interviews.length > 0) ||
+    (job.written_tests && job.written_tests.length > 0)
+  );
 
-  // 按投递分组（保持每个投递的面试记录在一起）
-  const groupedByJob = jobsWithInterviews.map(job => ({
+  // 按投递分组（保持每个投递的面试和笔试记录在一起）
+  const groupedByJob = jobsWithRecords.map(job => ({
     job: {
       id: job.id,
       company: job.company,
       position: job.position,
       status: job.status,
+      written_tests: job.written_tests || [], // 包含笔试记录
     },
-    interviews: job.interviews.sort((a, b) =>
+    interviews: (job.interviews || []).sort((a, b) =>
       new Date(b.date).getTime() - new Date(a.date).getTime()
     )
   }));
 
-  // 按最新面试时间排序
+  // 按最新面试或笔试时间排序
   const sortedGroups = groupedByJob.sort((a, b) => {
-    const aLatest = a.interviews[0]?.date || new Date(0);
-    const bLatest = b.interviews[0]?.date || new Date(0);
-    return new Date(bLatest).getTime() - new Date(aLatest).getTime();
+    const aLatestInterview = a.interviews[0]?.date || new Date(0);
+    const aLatestTest = a.job.written_tests[0]?.date || new Date(0);
+    const aLatest = new Date(Math.max(
+      new Date(aLatestInterview).getTime(),
+      new Date(aLatestTest).getTime()
+    ));
+
+    const bLatestInterview = b.interviews[0]?.date || new Date(0);
+    const bLatestTest = b.job.written_tests[0]?.date || new Date(0);
+    const bLatest = new Date(Math.max(
+      new Date(bLatestInterview).getTime(),
+      new Date(bLatestTest).getTime()
+    ));
+
+    return bLatest.getTime() - aLatest.getTime();
   });
 
   // 展开所有面试和笔试用于统计
-  const allInterviews = jobsWithInterviews.flatMap(job => job.interviews);
-  const allWrittenTests = jobs.flatMap(job => job.written_tests || []);
+  const allInterviews = jobsWithRecords.flatMap(job => job.interviews || []);
+  const allWrittenTests = jobsWithRecords.flatMap(job => job.written_tests || []);
 
   // 筛选
   const now = new Date();
   const filteredGroups = sortedGroups.filter(group => {
+    const interviews = group.interviews || [];
+    const writtenTests = group.job.written_tests || [];
+
     if (selectedType === 'upcoming') {
-      // 有即将到来的面试
-      return group.interviews.some(i => new Date(i.date) > now);
+      // 有即将到来的面试或笔试
+      return interviews.some(i => new Date(i.date) > now) ||
+             writtenTests.some(t => new Date(t.date) > now);
     } else if (selectedType === 'past') {
-      // 所有面试都已完成
-      return group.interviews.every(i => new Date(i.date) <= now);
+      // 所有面试和笔试都已完成
+      return interviews.every(i => new Date(i.date) <= now) &&
+             writtenTests.every(t => new Date(t.date) <= now) &&
+             (interviews.length > 0 || writtenTests.length > 0);
     }
     return true;
   });
