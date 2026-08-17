@@ -215,12 +215,10 @@ export default function SettingsPage() {
               className="hidden"
               id="import-file"
             />
-            <label htmlFor="import-file">
-              <Button asChild className="w-full md:w-auto cursor-pointer">
-                <span>
-                  <UploadIcon className="w-4 h-4 mr-2" />
-                  选择 JSON 文件导入
-                </span>
+            <label htmlFor="import-file" className="cursor-pointer">
+              <Button type="button" className="w-full md:w-auto">
+                <UploadIcon className="w-4 h-4 mr-2" />
+                选择 JSON 文件导入
               </Button>
             </label>
           </CardContent>

@@ -412,8 +412,32 @@ export default function InterviewsPage() {
                                   <h4 className="font-semibold text-sm text-gray-700 mb-2">
                                     📝 面试反馈 / 问题复盘
                                   </h4>
-                                  <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap">
-                                    {interview.notes}
+                                  <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
+                                    <div
+                                      className={`whitespace-pre-wrap ${
+                                        !expandedNotes.has(interview.id) && interview.notes.split('\n').length > 5
+                                          ? 'line-clamp-5'
+                                          : ''
+                                      }`}
+                                    >
+                                      {interview.notes}
+                                    </div>
+                                    {interview.notes.split('\n').length > 5 && (
+                                      <button
+                                        onClick={() => {
+                                          const newExpanded = new Set(expandedNotes);
+                                          if (expandedNotes.has(interview.id)) {
+                                            newExpanded.delete(interview.id);
+                                          } else {
+                                            newExpanded.add(interview.id);
+                                          }
+                                          setExpandedNotes(newExpanded);
+                                        }}
+                                        className="text-blue-600 hover:text-blue-700 text-xs mt-2 font-medium"
+                                      >
+                                        {expandedNotes.has(interview.id) ? '收起 ▲' : '展开更多 ▼'}
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               </>
