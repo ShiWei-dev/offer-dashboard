@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Interview, InterviewType, InterviewContentType, InterviewResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,17 +17,42 @@ import { PlusIcon, Trash2Icon, CalendarIcon } from 'lucide-react';
 interface InterviewManagerProps {
   interviews: Interview[];
   onChange: (interviews: Interview[]) => void;
+  reviewData?: any;  // 从"立即复盘"传入的预填充数据
 }
 
-export function InterviewManager({ interviews, onChange }: InterviewManagerProps) {
+export function InterviewManager({ interviews, onChange, reviewData }: InterviewManagerProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Partial<Interview>>({
-    date: new Date(),
-    type: 'video',
-    round: interviews.length + 1,
-    result: 'pending',
-  });
+
+  // 初始表单数据
+  const getInitialFormData = () => {
+    const baseData = {
+      date: new Date(),
+      type: 'video' as InterviewType,
+      round: interviews.length + 1,
+      result: 'pending' as InterviewResult,
+    };
+
+    // 如果有 reviewData，使用其中的数据预填充
+    if (reviewData) {
+      return {
+        ...baseData,
+        date: reviewData.date ? new Date(reviewData.date) : baseData.date,
+        content_type: reviewData.contentType,
+      };
+    }
+
+    return baseData;
+  };
+
+  const [formData, setFormData] = useState<Partial<Interview>>(getInitialFormData());
+
+  // 如果有 reviewData，自动展开添加表单
+  useEffect(() => {
+    if (reviewData) {
+      setIsAdding(true);
+    }
+  }, [reviewData]);
 
   const handleAdd = () => {
     if (!formData.date) {

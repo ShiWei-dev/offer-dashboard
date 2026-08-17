@@ -3,13 +3,16 @@
 import { useJobStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { formatDate, formatRelativeTime } from '@/lib/utils';
 import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
 import { InterviewContentType, WrittenTestCategory } from '@/lib/types';
-import { CalendarIcon, ClockIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, EditIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface UpcomingEvent {
   id: string;
+  jobId: string;  // 投递的 ID，用于跳转
   company: string;
   position: string;
   date: Date;
@@ -22,6 +25,7 @@ interface UpcomingEvent {
 
 export function UpcomingInterviews() {
   const { jobs } = useJobStore();
+  const router = useRouter();
 
   // 收集所有即将到来的笔试和面试
   const upcomingEvents: UpcomingEvent[] = [];
@@ -31,6 +35,7 @@ export function UpcomingInterviews() {
     if (job.next_interview_date) {
       upcomingEvents.push({
         id: `${job.id}-next`,
+        jobId: job.id,
         company: job.company,
         position: job.position,
         date: job.next_interview_date,
@@ -49,6 +54,7 @@ export function UpcomingInterviews() {
       futureTests.forEach(test => {
         upcomingEvents.push({
           id: `${job.id}-written-${test.id}`,
+          jobId: job.id,
           company: job.company,
           position: job.position,
           date: test.date,
@@ -62,6 +68,20 @@ export function UpcomingInterviews() {
   const sortedEvents = upcomingEvents
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .slice(0, 5);
+
+  // 立即复盘处理函数
+  const handleReview = (event: UpcomingEvent) => {
+    // 跳转到看板页，并通过 URL 参数传递信息
+    const params = new URLSearchParams({
+      job: event.jobId,
+      action: 'review',
+      type: event.type,
+      date: event.date.toISOString(),
+      ...(event.interviewContentType && { contentType: event.interviewContentType }),
+      ...(event.writtenTestCategory && { category: event.writtenTestCategory }),
+    });
+    router.push(`/board?${params.toString()}`);
+  };
 
   return (
     <Card>
@@ -153,6 +173,18 @@ export function UpcomingInterviews() {
                       第 {event.totalInterviews + 1} 轮面试
                     </div>
                   )}
+
+                  {/* 操作按钮 */}
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleReview(event)}
+                      className="flex items-center gap-1"
+                    >
+                      <EditIcon className="w-3 h-3" />
+                      立即复盘
+                    </Button>
+                  </div>
                 </div>
               );
             })}

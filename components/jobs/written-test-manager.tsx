@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WrittenTest, WrittenTestType, WrittenTestResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,17 +16,42 @@ import { PlusIcon, Trash2Icon, CalendarIcon } from 'lucide-react';
 interface WrittenTestManagerProps {
   writtenTests: WrittenTest[];
   onChange: (tests: WrittenTest[]) => void;
+  reviewData?: any;  // 从"立即复盘"传入的预填充数据
 }
 
-export function WrittenTestManager({ writtenTests, onChange }: WrittenTestManagerProps) {
+export function WrittenTestManager({ writtenTests, onChange, reviewData }: WrittenTestManagerProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Partial<WrittenTest>>({
-    date: new Date(),
-    type: 'online',
-    result: 'pending',
-    topics: [],
-  });
+
+  // 初始表单数据
+  const getInitialFormData = () => {
+    const baseData = {
+      date: new Date(),
+      type: 'online' as WrittenTestType,
+      result: 'pending' as WrittenTestResult,
+      topics: [],
+    };
+
+    // 如果有 reviewData，使用其中的数据预填充
+    if (reviewData) {
+      return {
+        ...baseData,
+        date: reviewData.date ? new Date(reviewData.date) : baseData.date,
+        category: reviewData.category,
+      };
+    }
+
+    return baseData;
+  };
+
+  const [formData, setFormData] = useState<Partial<WrittenTest>>(getInitialFormData());
+
+  // 如果有 reviewData，自动展开添加表单
+  useEffect(() => {
+    if (reviewData) {
+      setIsAdding(true);
+    }
+  }, [reviewData]);
 
   const [topicInput, setTopicInput] = useState('');
 
