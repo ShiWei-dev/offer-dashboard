@@ -245,7 +245,7 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
             <Label htmlFor="resume_version">简历版本</Label>
             <Select
               value={formData.resume_version}
-              onValueChange={(value) => setFormData({ ...formData, resume_version: value })}
+              onValueChange={(value) => setFormData({ ...formData, resume_version: value || undefined })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="选择简历版本" />

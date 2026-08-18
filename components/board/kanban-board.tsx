@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { JobApplication, JobStatus } from '@/lib/types';
+import { JobApplication, JobStatus, Priority, ClosedResult } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
 import { BOARD_COLUMNS } from '@/lib/constants';
 import { useJobStore } from '@/lib/store';
@@ -78,6 +78,18 @@ export function KanbanBoard({ onJobClick }: KanbanBoardProps) {
     setActiveJob(null);
   };
 
+  const handlePriorityChange = (jobId: string, priority: Priority) => {
+    updateJob(jobId, { priority });
+  };
+
+  const handleStatusChange = (jobId: string, status: JobStatus) => {
+    updateJob(jobId, { status });
+  };
+
+  const handleResultChange = (jobId: string, result: ClosedResult | null) => {
+    updateJob(jobId, { closed_result: result || undefined });
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -92,6 +104,9 @@ export function KanbanBoard({ onJobClick }: KanbanBoardProps) {
             status={status}
             jobs={jobsByStatus[status]}
             onJobClick={onJobClick}
+            onPriorityChange={handlePriorityChange}
+            onStatusChange={handleStatusChange}
+            onResultChange={handleResultChange}
           />
         ))}
       </div>

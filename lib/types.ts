@@ -27,6 +27,7 @@ export interface WrittenTest {
   id: string;
   date: Date;
   type: WrittenTestType;       // 在线笔试或现场笔试
+  category?: WrittenTestCategory; // 笔试题目类型（算法/行测/测评等）
   duration?: number;            // 时长（分钟）
   platform?: string;            // 笔试平台（如：牛客、赛码）
   topics?: string[];            // 题目类型（算法、SQL、系统设计等）

@@ -142,6 +142,7 @@ export function ReviewDialog({
     if (!qaInput.question.trim()) return;
 
     const newQA = {
+      id: nanoid(),
       question: qaInput.question,
       answer: qaInput.answer,
     };

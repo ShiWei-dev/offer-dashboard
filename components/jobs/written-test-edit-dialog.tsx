@@ -66,7 +66,7 @@ export function WrittenTestEditDialog({
               <Label>笔试形式</Label>
               <Select
                 value={formData.type || 'online'}
-                onValueChange={(value: WrittenTestType) => setFormData({ ...formData, type: value })}
+                onValueChange={(value: any) => setFormData({ ...formData, type: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -82,7 +82,7 @@ export function WrittenTestEditDialog({
               <Label>笔试结果</Label>
               <Select
                 value={formData.result || 'pending'}
-                onValueChange={(value: WrittenTestResult) => setFormData({ ...formData, result: value })}
+                onValueChange={(value: any) => setFormData({ ...formData, result: value })}
               >
                 <SelectTrigger>
                   <SelectValue />

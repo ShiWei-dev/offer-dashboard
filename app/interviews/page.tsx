@@ -296,19 +296,19 @@ export default function InterviewsPage() {
               variant={selectedType === 'all' ? 'default' : 'outline'}
               onClick={() => setSelectedType('all')}
             >
-              全部 ({stats.total})
+              全部 ({stats.totalInterviews + stats.totalWrittenTests})
             </Button>
             <Button
               variant={selectedType === 'upcoming' ? 'default' : 'outline'}
               onClick={() => setSelectedType('upcoming')}
             >
-              待参加 ({stats.upcoming})
+              待参加 ({stats.upcomingInterviews + stats.upcomingWrittenTests})
             </Button>
             <Button
               variant={selectedType === 'past' ? 'default' : 'outline'}
               onClick={() => setSelectedType('past')}
             >
-              已完成 ({stats.total - stats.upcoming})
+              已完成 ({(stats.totalInterviews + stats.totalWrittenTests) - (stats.upcomingInterviews + stats.upcomingWrittenTests)})
             </Button>
           </div>
 
@@ -400,8 +400,7 @@ export default function InterviewsPage() {
                               </Badge>
 
                               <Badge variant="outline">
-                                {interview.type === 'written' ? '📝 笔试' :
-                                 interview.type === 'onsite' ? '🏢 现场' :
+                                {interview.type === 'onsite' ? '🏢 现场' :
                                  interview.type === 'video' ? '📹 视频' : '📞 电话'}
                               </Badge>
 
@@ -658,8 +657,7 @@ export default function InterviewsPage() {
                   <span>{formatDate(editingInterview.interview.date, 'long')}</span>
                   <span>•</span>
                   <span>
-                    {editingInterview.interview.type === 'written' ? '📝 笔试' :
-                     editingInterview.interview.type === 'onsite' ? '🏢 现场' :
+                    {editingInterview.interview.type === 'onsite' ? '🏢 现场' :
                      editingInterview.interview.type === 'video' ? '📹 视频' : '📞 电话'}
                   </span>
                 </div>

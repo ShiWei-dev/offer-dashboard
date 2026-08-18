@@ -209,6 +209,7 @@ export function createJobFromEmail(parseResult: EmailParseResult): JobApplicatio
     email_subject: parseResult.email_subject,
     email_from: parseResult.email_from,
     interviews: [],
+    written_tests: [],
     notes: `从邮件自动创建 (置信度: ${Math.round(parseResult.confidence * 100)}%)\n主题: ${parseResult.email_subject}`,
     created_at: new Date(),
     updated_at: new Date()
