@@ -436,41 +436,65 @@ export default function InterviewsPage() {
                             </div>
 
                             {/* 面试反馈/复盘 */}
-                            {interview.notes ? (
+                            {(interview.qa_pairs && interview.qa_pairs.length > 0) || interview.notes ? (
                               <>
                                 <Separator className="my-4" />
-                                <div>
-                                  <h4 className="font-semibold text-sm text-gray-700 mb-2">
-                                    📝 面试反馈 / 问题复盘
-                                  </h4>
-                                  <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
-                                    <div
-                                      className={`whitespace-pre-wrap ${
-                                        !expandedNotes.has(interview.id) && interview.notes.split('\n').length > 5
-                                          ? 'line-clamp-5'
-                                          : ''
-                                      }`}
-                                    >
-                                      {interview.notes}
+                                {/* 结构化问答 */}
+                                {interview.qa_pairs && interview.qa_pairs.length > 0 && (
+                                  <div className="mb-3">
+                                    <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                                      📋 面试问答（{interview.qa_pairs.length}）
+                                    </h4>
+                                    <div className="space-y-2">
+                                      {interview.qa_pairs.map((qa, idx) => (
+                                        <div key={qa.id || idx} className="bg-gray-50 rounded-lg p-3 text-sm">
+                                          <p className="font-medium text-gray-900">Q{idx + 1}: {qa.question}</p>
+                                          {qa.answer && (
+                                            <p className="text-gray-700 mt-1 whitespace-pre-wrap">A: {qa.answer}</p>
+                                          )}
+                                          {qa.reflection && (
+                                            <p className="text-gray-500 mt-1 text-xs">💭 {qa.reflection}</p>
+                                          )}
+                                        </div>
+                                      ))}
                                     </div>
-                                    {interview.notes.split('\n').length > 5 && (
-                                      <button
-                                        onClick={() => {
-                                          const newExpanded = new Set(expandedNotes);
-                                          if (expandedNotes.has(interview.id)) {
-                                            newExpanded.delete(interview.id);
-                                          } else {
-                                            newExpanded.add(interview.id);
-                                          }
-                                          setExpandedNotes(newExpanded);
-                                        }}
-                                        className="text-blue-600 hover:text-blue-700 text-xs mt-2 font-medium"
-                                      >
-                                        {expandedNotes.has(interview.id) ? '收起 ▲' : '展开更多 ▼'}
-                                      </button>
-                                    )}
                                   </div>
-                                </div>
+                                )}
+                                {/* 自由文本备注 */}
+                                {interview.notes && (
+                                  <div>
+                                    <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                                      📝 面试反馈 / 问题复盘
+                                    </h4>
+                                    <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
+                                      <div
+                                        className={`whitespace-pre-wrap ${
+                                          !expandedNotes.has(interview.id) && interview.notes.split('\n').length > 5
+                                            ? 'line-clamp-5'
+                                            : ''
+                                        }`}
+                                      >
+                                        {interview.notes}
+                                      </div>
+                                      {interview.notes.split('\n').length > 5 && (
+                                        <button
+                                          onClick={() => {
+                                            const newExpanded = new Set(expandedNotes);
+                                            if (expandedNotes.has(interview.id)) {
+                                              newExpanded.delete(interview.id);
+                                            } else {
+                                              newExpanded.add(interview.id);
+                                            }
+                                            setExpandedNotes(newExpanded);
+                                          }}
+                                          className="text-blue-600 hover:text-blue-700 text-xs mt-2 font-medium"
+                                        >
+                                          {expandedNotes.has(interview.id) ? '收起 ▲' : '展开更多 ▼'}
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                               </>
                             ) : (
                               <>
