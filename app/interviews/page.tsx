@@ -500,7 +500,7 @@ export default function InterviewsPage() {
                               <>
                                 <Separator className="my-4" />
                                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-700">
-                                  💡 还未添加面试复盘，点击右侧"编辑复盘"按钮添加
+                                  💡 还未添加面试复盘，点击右侧「编辑复盘」按钮添加
                                 </div>
                               </>
                             )}

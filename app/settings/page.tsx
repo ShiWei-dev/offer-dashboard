@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useJobStore } from '@/lib/store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,16 +12,16 @@ import Link from 'next/link';
 export default function SettingsPage() {
   const { jobs, importJobs, clearAllJobs } = useJobStore();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [storageSize, setStorageSize] = useState('0 KB');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 客户端计算存储大小
-  useEffect(() => {
+  // 从 jobs 派生存储大小（依赖 jobs，数据变化时重新计算）
+  const storageSize = useMemo(() => {
+    if (typeof window === 'undefined') return '0 KB';
     const data = localStorage.getItem('job-tracker-storage');
-    if (data) {
-      const bytes = new Blob([data]).size;
-      setStorageSize((bytes / 1024).toFixed(2) + ' KB');
-    }
-  }, [jobs]); // 依赖 jobs，数据变化时重新计算
+    if (!data) return '0 KB';
+    const bytes = new Blob([data]).size;
+    return (bytes / 1024).toFixed(2) + ' KB';
+  }, [jobs]);
 
   // 导出数据为 JSON
   const handleExport = () => {
@@ -35,7 +35,7 @@ export default function SettingsPage() {
       link.click();
       URL.revokeObjectURL(url);
       setMessage({ type: 'success', text: '数据导出成功！' });
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: '导出失败，请重试' });
     }
   };
@@ -74,8 +74,11 @@ export default function SettingsPage() {
 
         importJobs(jobsWithDates);
         setMessage({ type: 'success', text: `成功导入 ${jobsWithDates.length} 条记录！` });
-      } catch (error) {
+      } catch {
         setMessage({ type: 'error', text: '导入失败，请检查文件格式' });
+      } finally {
+        // 重置 input，允许连续导入同一个文件
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
     };
     reader.readAsText(file);
@@ -211,18 +214,21 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <input
+              ref={fileInputRef}
               type="file"
               accept=".json"
               onChange={handleImport}
               className="hidden"
               id="import-file"
             />
-            <label htmlFor="import-file" className="cursor-pointer">
-              <Button type="button" className="w-full md:w-auto">
-                <UploadIcon className="w-4 h-4 mr-2" />
-                选择 JSON 文件导入
-              </Button>
-            </label>
+            <Button
+              type="button"
+              className="w-full md:w-auto"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <UploadIcon className="w-4 h-4 mr-2" />
+              选择 JSON 文件导入
+            </Button>
           </CardContent>
         </Card>
 
