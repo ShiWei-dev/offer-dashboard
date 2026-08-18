@@ -45,15 +45,7 @@ vercel --prod
 
 **完成！** 🎉
 
-### 方式 3️⃣: Docker
-
-```bash
-docker-compose up -d
-```
-
-访问 http://localhost:3000
-
-### 方式 4️⃣: 自托管服务器
+### 方式 3️⃣: 自托管服务器
 
 参考 [DEPLOYMENT.md](DEPLOYMENT.md) 完整指南
 

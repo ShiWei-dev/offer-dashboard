@@ -86,9 +86,7 @@ vercel --prod
 ```
 
 **配置说明：**
-- Framework Preset: `Next.js`
-- Build Command: `npm run build`
-- Output Directory: `.next`
+- Framework Preset: `Next.js`（Vercel 自动检测，无需手动配置）
 - Node.js Version: `18.x`
 
 ### Netlify 部署
@@ -103,16 +101,6 @@ vercel --prod
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-```
-
-### Docker 部署
-
-```bash
-# 构建镜像
-docker build -t offer-dashboard .
-
-# 运行容器
-docker run -p 3000:3000 offer-dashboard
 ```
 
 ### 自托管部署

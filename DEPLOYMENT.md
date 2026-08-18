@@ -6,7 +6,6 @@
 
 - [Vercel 部署（推荐）](#vercel-部署推荐)
 - [Netlify 部署](#netlify-部署)
-- [Docker 部署](#docker-部署)
 - [自托管部署](#自托管部署)
 - [环境变量配置](#环境变量配置)
 - [常见问题](#常见问题)
@@ -105,67 +104,6 @@ vercel --prod
 
 [build.environment]
   NODE_VERSION = "18"
-```
-
----
-
-## Docker 部署
-
-### 本地构建和运行
-
-```bash
-# 构建镜像
-docker build -t offer-dashboard .
-
-# 运行容器
-docker run -d \
-  --name offer-dashboard \
-  -p 3000:3000 \
-  --restart unless-stopped \
-  offer-dashboard
-
-# 查看日志
-docker logs -f offer-dashboard
-```
-
-### 使用 Docker Compose
-
-```bash
-# 启动
-docker-compose up -d
-
-# 查看日志
-docker-compose logs -f
-
-# 停止
-docker-compose down
-```
-
-### 推送到 Docker Hub
-
-```bash
-# 登录 Docker Hub
-docker login
-
-# 标记镜像
-docker tag offer-dashboard your-username/offer-dashboard:latest
-
-# 推送镜像
-docker push your-username/offer-dashboard:latest
-```
-
-### 在服务器上部署
-
-```bash
-# 拉取镜像
-docker pull your-username/offer-dashboard:latest
-
-# 运行
-docker run -d \
-  --name offer-dashboard \
-  -p 3000:3000 \
-  --restart unless-stopped \
-  your-username/offer-dashboard:latest
 ```
 
 ---
@@ -293,19 +231,12 @@ npm install
 npm run build
 ```
 
-### Q2: Docker 镜像太大
-
-**解决方案：**
-- 使用 `.dockerignore` 排除不必要的文件
-- 已配置多阶段构建优化镜像大小
-- 当前镜像大小约 150MB
-
-### Q3: Vercel 部署后页面空白
+### Q2: Vercel 部署后页面空白
 
 **解决方案：**
 - 检查浏览器控制台错误
-- 确认 `next.config.ts` 中的 `output: 'standalone'` 配置
 - 检查是否有环境变量缺失
+- 查看 Vercel 部署日志排查构建问题
 
 ### Q4: Nginx 502 Bad Gateway
 
@@ -348,19 +279,6 @@ git add .
 git commit -m "update"
 git push origin main
 # 自动触发部署
-```
-
-### Docker
-```bash
-# 重新构建
-docker build -t offer-dashboard .
-
-# 停止旧容器
-docker stop offer-dashboard
-docker rm offer-dashboard
-
-# 启动新容器
-docker run -d --name offer-dashboard -p 3000:3000 offer-dashboard
 ```
 
 ### PM2
