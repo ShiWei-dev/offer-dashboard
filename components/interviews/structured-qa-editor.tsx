@@ -96,7 +96,7 @@ export function StructuredQAEditor({ qaPairs, onChange }: StructuredQAEditorProp
       {/* 问答列表 */}
       <div className="space-y-4">
         {qaPairs.map((pair, index) => (
-          <Card key={pair.id} className="p-4">
+          <Card key={pair.id || index} className="p-4">
             {editingId === pair.id ? (
               // 编辑模式
               <div className="space-y-3">
