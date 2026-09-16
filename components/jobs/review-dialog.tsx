@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
+import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG, WRITTEN_TEST_CATEGORY_ITEMS } from '@/lib/constants';
 import { useJobStore } from '@/lib/store';
 import { nanoid } from 'nanoid';
 import { formatDate } from '@/lib/utils';
@@ -105,7 +105,7 @@ export function ReviewDialog({
       id: nanoid(),
       date: writtenTestData.date,
       type: writtenTestData.type as WrittenTestType,
-      category: writtenTestData.category as WrittenTestCategory,
+      category: writtenTestData.category,
       platform: writtenTestData.platform,
       duration: writtenTestData.duration,
       topics: writtenTestData.topics || [],
@@ -351,6 +351,26 @@ export function ReviewDialog({
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>笔试类型</Label>
+              <Select
+                items={WRITTEN_TEST_CATEGORY_ITEMS}
+                value={writtenTestData.category || ''}
+                onValueChange={(value) => setWrittenTestData({ ...writtenTestData, category: value as WrittenTestCategory })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="选择笔试类型" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(WRITTEN_TEST_CATEGORY_ITEMS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">

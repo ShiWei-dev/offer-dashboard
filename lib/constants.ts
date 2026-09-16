@@ -104,3 +104,12 @@ export const WRITTEN_TEST_CATEGORY_CONFIG = {
   mixed: { label: '综合测试', icon: '📋' },
   other: { label: '其他', icon: '❓' },
 } as const;
+
+// 笔试类型下拉选项（value -> 显示文案）
+// 传给 Select 的 items，让触发器显示标签而不是原始 value
+export const WRITTEN_TEST_CATEGORY_ITEMS: Record<string, string> = Object.fromEntries(
+  Object.entries(WRITTEN_TEST_CATEGORY_CONFIG).map(([value, config]) => [
+    value,
+    `${config.icon} ${config.label}`,
+  ])
+);

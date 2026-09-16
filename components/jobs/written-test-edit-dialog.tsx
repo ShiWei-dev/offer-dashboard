@@ -8,9 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
-import { WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
+import { WRITTEN_TEST_CATEGORY_ITEMS } from '@/lib/constants';
 
 interface WrittenTestEditDialogProps {
   open: boolean;
@@ -96,14 +95,25 @@ export function WrittenTestEditDialog({
             </div>
           </div>
 
-          {formData.category && (
-            <div className="space-y-2">
-              <Label>笔试类型</Label>
-              <Badge variant="outline" className="text-sm">
-                {WRITTEN_TEST_CATEGORY_CONFIG[formData.category]?.label || formData.category}
-              </Badge>
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label>笔试类型</Label>
+            <Select
+              items={WRITTEN_TEST_CATEGORY_ITEMS}
+              value={formData.category || ''}
+              onValueChange={(value) => setFormData({ ...formData, category: value as WrittenTestCategory })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="选择笔试类型" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(WRITTEN_TEST_CATEGORY_ITEMS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="space-y-2">
             <Label>笔试平台</Label>

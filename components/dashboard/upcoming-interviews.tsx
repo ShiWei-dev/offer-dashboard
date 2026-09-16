@@ -128,7 +128,7 @@ export function UpcomingInterviews() {
                               📝 笔试
                               {event.writtenTestCategory && (
                                 <span className="ml-1">
-                                  - {WRITTEN_TEST_CATEGORY_CONFIG[event.writtenTestCategory].label}
+                                  - {WRITTEN_TEST_CATEGORY_CONFIG[event.writtenTestCategory]?.label || event.writtenTestCategory}
                                 </span>
                               )}
                             </>
@@ -137,7 +137,7 @@ export function UpcomingInterviews() {
                               🎯 面试
                               {event.interviewContentType && (
                                 <span className="ml-1">
-                                  - {INTERVIEW_CONTENT_TYPE_CONFIG[event.interviewContentType].label}
+                                  - {INTERVIEW_CONTENT_TYPE_CONFIG[event.interviewContentType]?.label || event.interviewContentType}
                                 </span>
                               )}
                             </>

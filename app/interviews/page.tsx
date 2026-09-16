@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/utils';
+import { WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
 import { CalendarIcon, BuildingIcon, BriefcaseIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -566,7 +567,9 @@ export default function InterviewsPage() {
                                   {test.category && (
                                     <div>
                                       <span className="text-gray-500">类型：</span>
-                                      <span className="font-medium">{test.category}</span>
+                                      <span className="font-medium">
+                                        {WRITTEN_TEST_CATEGORY_CONFIG[test.category]?.label || test.category}
+                                      </span>
                                     </div>
                                   )}
                                   {test.platform && (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { WrittenTest, WrittenTestType, WrittenTestResult } from '@/lib/types';
+import { WrittenTest, WrittenTestType, WrittenTestCategory, WrittenTestResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
+import { WRITTEN_TEST_CATEGORY_CONFIG, WRITTEN_TEST_CATEGORY_ITEMS } from '@/lib/constants';
 import { nanoid } from 'nanoid';
 import { PlusIcon, Trash2Icon, CalendarIcon } from 'lucide-react';
 
@@ -65,6 +66,7 @@ export function WrittenTestManager({ writtenTests, onChange, reviewData }: Writt
       id: nanoid(),
       date: formData.date,
       type: formData.type as WrittenTestType,
+      category: formData.category,
       duration: formData.duration,
       platform: formData.platform,
       topics: formData.topics || [],
@@ -167,6 +169,12 @@ export function WrittenTestManager({ writtenTests, onChange, reviewData }: Writt
                   <Badge variant="outline">
                     {test.type === 'online' ? '💻 在线笔试' : '📝 现场笔试'}
                   </Badge>
+                  {test.category && (
+                    <Badge variant="outline">
+                      {WRITTEN_TEST_CATEGORY_CONFIG[test.category]?.icon}{' '}
+                      {WRITTEN_TEST_CATEGORY_CONFIG[test.category]?.label || test.category}
+                    </Badge>
+                  )}
                   {test.duration && (
                     <span className="text-xs text-gray-600">{test.duration} 分钟</span>
                   )}
@@ -278,21 +286,43 @@ export function WrittenTestManager({ writtenTests, onChange, reviewData }: Writt
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>笔试结果</Label>
-              <Select
-                value={formData.result}
-                onValueChange={(value) => setFormData({ ...formData, result: value as WrittenTestResult })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">⏳ 待定</SelectItem>
-                  <SelectItem value="pass">✅ 通过</SelectItem>
-                  <SelectItem value="fail">❌ 未通过</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>笔试类型</Label>
+                <Select
+                  items={WRITTEN_TEST_CATEGORY_ITEMS}
+                  value={formData.category || ''}
+                  onValueChange={(value) => setFormData({ ...formData, category: value as WrittenTestCategory })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择笔试类型" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(WRITTEN_TEST_CATEGORY_ITEMS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>笔试结果</Label>
+                <Select
+                  value={formData.result}
+                  onValueChange={(value) => setFormData({ ...formData, result: value as WrittenTestResult })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">⏳ 待定</SelectItem>
+                    <SelectItem value="pass">✅ 通过</SelectItem>
+                    <SelectItem value="fail">❌ 未通过</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
