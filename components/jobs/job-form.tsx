@@ -30,8 +30,9 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
     status: job?.status || 'todo',
     priority: job?.priority || 'medium',
     channel: job?.channel || undefined,
-    resume_version: job?.resume_version || '',
-    applied_date: job?.applied_date,
+    // 新建时默认「通用版」+ 今天；编辑时严格保留原值（含原本为空的情况）
+    resume_version: isEdit ? (job?.resume_version || '') : DEFAULT_RESUME_VERSIONS[0],
+    applied_date: isEdit ? job?.applied_date : new Date(),
     next_interview_date: job?.next_interview_date,
     next_event_type: job?.next_event_type,
     notes: job?.notes || '',
@@ -233,7 +234,9 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
             <Input
               id="applied_date"
               type="date"
-              value={formData.applied_date ? formData.applied_date.toISOString().split('T')[0] : ''}
+              value={formData.applied_date ?
+                new Date(formData.applied_date.getTime() - formData.applied_date.getTimezoneOffset() * 60000)
+                  .toISOString().split('T')[0] : ''}
               onChange={(e) => setFormData({
                 ...formData,
                 applied_date: e.target.value ? new Date(e.target.value) : undefined
