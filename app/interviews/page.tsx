@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/utils';
-import { WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
+import { INTERVIEW_CONTENT_TYPE_CONFIG, WRITTEN_TEST_CATEGORY_CONFIG } from '@/lib/constants';
 import { CalendarIcon, BuildingIcon, BriefcaseIcon, PencilIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -405,6 +405,13 @@ export default function InterviewsPage() {
                                  interview.type === 'video' ? '📹 视频' : '📞 电话'}
                               </Badge>
 
+                              {interview.content_type && (
+                                <Badge variant="outline" className="bg-blue-50">
+                                  {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type]?.icon}{' '}
+                                  {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type]?.label || interview.content_type}
+                                </Badge>
+                              )}
+
                               {!isPast && (
                                 <Badge className="bg-orange-600 text-white">
                                   {isToday ? '今天' : '即将到来'}
@@ -687,6 +694,16 @@ export default function InterviewsPage() {
                     {editingInterview.interview.type === 'onsite' ? '🏢 现场' :
                      editingInterview.interview.type === 'video' ? '📹 视频' : '📞 电话'}
                   </span>
+                  {editingInterview.interview.content_type && (
+                    <>
+                      <span>•</span>
+                      <span>
+                        {INTERVIEW_CONTENT_TYPE_CONFIG[editingInterview.interview.content_type]?.icon}{' '}
+                        {INTERVIEW_CONTENT_TYPE_CONFIG[editingInterview.interview.content_type]?.label
+                          || editingInterview.interview.content_type}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
