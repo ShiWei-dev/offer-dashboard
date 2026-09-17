@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { STATUS_CONFIG, CHANNEL_CONFIG, DEFAULT_RESUME_VERSIONS } from '@/lib/constants';
+import { STATUS_CONFIG, CHANNEL_CONFIG, DEFAULT_RESUME_VERSIONS, INTERVIEW_CONTENT_TYPE_ITEMS } from '@/lib/constants';
 import { InterviewManager } from './interview-manager';
 import { WrittenTestManager } from './written-test-manager';
 import { nanoid } from 'nanoid';
@@ -295,6 +295,7 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
           {/* 面试类型选择 */}
           {formData.next_event_type === 'interview' && (
             <Select
+              items={INTERVIEW_CONTENT_TYPE_ITEMS}
               value={formData.next_interview_content_type || ''}
               onValueChange={(value: any) => setFormData({ ...formData, next_interview_content_type: value })}
             >
@@ -302,11 +303,11 @@ export function JobForm({ job, onSubmit, onCancel }: JobFormProps) {
                 <SelectValue placeholder="选择面试类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="technical">💻 技术面</SelectItem>
-                <SelectItem value="hr">💼 HR面</SelectItem>
-                <SelectItem value="manager">👔 主管面</SelectItem>
-                <SelectItem value="ceo">🎯 高管面</SelectItem>
-                <SelectItem value="other">📋 其他</SelectItem>
+                {Object.entries(INTERVIEW_CONTENT_TYPE_ITEMS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           )}

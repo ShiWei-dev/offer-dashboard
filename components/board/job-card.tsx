@@ -61,7 +61,9 @@ export function JobCard({ job, onClick, onPriorityChange, onStatusChange, onResu
       // 如果最新一轮面试未完成
       if (!latestInterview.result || latestInterview.result === 'pending') {
         // 根据 content_type 判断
-        if (latestInterview.content_type === 'hr') {
+        if (latestInterview.content_type === 'ai') {
+          return '🤖 AI面';
+        } else if (latestInterview.content_type === 'hr') {
           return '💼 HR面';
         } else if (latestInterview.content_type === 'manager') {
           return '👔 主管面';

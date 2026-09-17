@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
-import { INTERVIEW_CONTENT_TYPE_CONFIG } from '@/lib/constants';
+import { INTERVIEW_CONTENT_TYPE_CONFIG, INTERVIEW_CONTENT_TYPE_ITEMS } from '@/lib/constants';
 import { nanoid } from 'nanoid';
 import { PlusIcon, Trash2Icon, CalendarIcon } from 'lucide-react';
 
@@ -158,8 +158,8 @@ export function InterviewManager({ interviews, onChange, reviewData }: Interview
                   </Badge>
                   {interview.content_type && (
                     <Badge variant="outline" className="bg-blue-50">
-                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type].icon}{' '}
-                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type].label}
+                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type]?.icon}{' '}
+                      {INTERVIEW_CONTENT_TYPE_CONFIG[interview.content_type]?.label || interview.content_type}
                     </Badge>
                   )}
                 </div>
@@ -254,6 +254,7 @@ export function InterviewManager({ interviews, onChange, reviewData }: Interview
               <div className="space-y-2">
                 <Label>面试类型</Label>
                 <Select
+                  items={INTERVIEW_CONTENT_TYPE_ITEMS}
                   value={formData.content_type || 'technical'}
                   onValueChange={(value) => setFormData({ ...formData, content_type: value as InterviewContentType })}
                 >
@@ -261,11 +262,11 @@ export function InterviewManager({ interviews, onChange, reviewData }: Interview
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="technical">💻 技术面</SelectItem>
-                    <SelectItem value="hr">💼 HR面</SelectItem>
-                    <SelectItem value="manager">👔 主管面</SelectItem>
-                    <SelectItem value="ceo">🎯 高管面</SelectItem>
-                    <SelectItem value="other">📋 其他</SelectItem>
+                    {Object.entries(INTERVIEW_CONTENT_TYPE_ITEMS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

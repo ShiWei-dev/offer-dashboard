@@ -11,7 +11,7 @@ export type Channel = 'official' | 'boss' | 'liepin' | 'lagou' | 'zhipin' | 'ref
 export type InterviewType = 'onsite' | 'video' | 'phone';
 
 // 面试内容类型
-export type InterviewContentType = 'technical' | 'hr' | 'manager' | 'ceo' | 'other';
+export type InterviewContentType = 'ai' | 'technical' | 'hr' | 'manager' | 'ceo' | 'other';
 
 // 笔试类型
 export type WrittenTestType = 'online' | 'onsite';

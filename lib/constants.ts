@@ -88,6 +88,7 @@ export const DEFAULT_RESUME_VERSIONS = [
 
 // 面试内容类型配置
 export const INTERVIEW_CONTENT_TYPE_CONFIG = {
+  ai: { label: 'AI面', icon: '🤖' },
   technical: { label: '技术面', icon: '💻' },
   hr: { label: 'HR面', icon: '💼' },
   manager: { label: '主管面', icon: '👔' },
@@ -109,6 +110,14 @@ export const WRITTEN_TEST_CATEGORY_CONFIG = {
 // 传给 Select 的 items，让触发器显示标签而不是原始 value
 export const WRITTEN_TEST_CATEGORY_ITEMS: Record<string, string> = Object.fromEntries(
   Object.entries(WRITTEN_TEST_CATEGORY_CONFIG).map(([value, config]) => [
+    value,
+    `${config.icon} ${config.label}`,
+  ])
+);
+
+// 面试类型下拉选项（value -> 显示文案），同上
+export const INTERVIEW_CONTENT_TYPE_ITEMS: Record<string, string> = Object.fromEntries(
+  Object.entries(INTERVIEW_CONTENT_TYPE_CONFIG).map(([value, config]) => [
     value,
     `${config.icon} ${config.label}`,
   ])
